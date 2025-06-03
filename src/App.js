@@ -35,28 +35,6 @@ const THEME_BRAND_RED = '#e41313';
 const THEME_LIME_GREEN = '#AFFF33';
 const THEME_LIME_GREEN_DARKER = '#8ACC1E';
 
-
-// Removed Firebase Config & Initialization variables and logic
-// const firebaseConfigString = process.env.REACT_APP_FIREBASE_CONFIG || '{}';
-// let firebaseConfig = {};
-// try { firebaseConfig = JSON.parse(firebaseConfigString); } catch (e) { console.error("Error parsing Firebase config:", e); }
-// let app; let auth; let db;
-// if (firebaseConfig && firebaseConfig.apiKey) {
-//       try {
-//           app = initializeApp(firebaseConfig);
-//           auth = getAuth(app);
-//           db = getFirestore(app);
-//       } catch (e) {
-//           console.error("Error initializing Firebase:", e);
-//           auth = { currentUser: null, onAuthStateChanged: () => () => {}, signInAnonymously: async () => ({ user: { uid: 'anon-user-' + crypto.randomUUID() } }) };
-//           db = { collection: () => ({ onSnapshot: () => () => {}, doc: () => ({ get: async () => ({ exists: () => false, data: () => null }) }) }) };
-//       }
-// } else {
-//       console.warn("Firebase config not found. App will run with limited functionality.");
-//       auth = { currentUser: null, onAuthStateChanged: () => () => {}, signInAnonymously: async () => ({ user: { uid: 'anon-user-' + crypto.randomUUID() } }) };
-//       db = { collection: () => ({ onSnapshot: () => () => {}, doc: () => ({ get: async () => ({ exists: () => false, data: () => null }) }) }) };
-// }
-
 // appId is now just a constant, no longer related to Firebase paths
 const appId = 'brutal-burritos-app';
 
@@ -76,19 +54,19 @@ const MOCK_PRODUCTS = [
         customizationOptions: [
             { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ] },
             { id: 'arroz_arma', title: '2. Arroz', type: 'radio', obligatorio: false, options: [{ label: 'Arroz Blanco', value: 'arroz_blanco' }, {label: 'Sin Arroz', value: 'sin_arroz'}] , isDefault: 'arroz_blanco'},
-            { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, { label: 'Frijoles Negros', value: 'frijoles_negros' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'},
+            { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'}, // Removed Frijoles Negros
             { id: 'queso_arma', title: '4. Elige tu Queso (incluido)', type: 'radio', obligatorio: false, options: [{ label: 'Queso Oaxaca', value: 'queso_oaxaca_arma'}, { label: 'Queso Manchego', value: 'queso_manchego_arma' }, {label: 'Sin Queso', value: 'sin_queso_arma'}]},
             { id: 'extras_arma_tu_burrito_combined', title: '5. Extras Brutales (con costo adicional)', type: 'checkbox', obligatorio: false, options: CUSTOMIZATION_EXTRAS_OPTIONS },
-            { id: 'aderezos_arma', title: '6. Aderezos (elige hasta 2)', type: 'checkbox', options: ADEREZOS_OPTIONS_BASE, maxChoices: 2, obligatorio: false },
+            { id: 'aderezos_arma', title: '6. Aderezos (elige hasta 3)', type: 'checkbox', options: ADEREZOS_OPTIONS_BASE, maxChoices: 3, obligatorio: false }, // Changed maxChoices to 3
             { id: 'chiles_tatemados_arma', title: '7. Chiles Tatemados (opcional)', type: 'checkbox', options: CHILES_TATEMADOS_OPTIONS, obligatorio: false },
             { id: 'special_instructions_arma', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Cualquier detalle adicional...', obligatorio: false }
         ]
     },
     { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Familiar`, category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
-        customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnición Ensaladas', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+        customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ] // Changed title to Guarnicion
     },
     { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Duo`, category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
-        customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnición Ensaladas', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+        customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ] // Changed title to Guarnicion
     },
     { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Original`, category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
@@ -111,28 +89,6 @@ const POPULARES_SECTION_ORDER = ['Burritos de la Casa', 'Combos', 'Arma tu Burri
 
 const formatPrice = (price) => price ? `$${price.toFixed(2)}` : '$0.00';
 
-// Removed setupProductsInFirestore as it interacts with Firestore
-// const setupProductsInFirestore = async () => {
-//       if (!db || !(firebaseConfig && firebaseConfig.apiKey)) return;
-//       const productsRef = collection(db, `/artifacts/${appId}/public/data/products`);
-//       try {
-//           if (MOCK_PRODUCTS.length === 0) { console.log("MOCK_PRODUCTS is empty, skipping setup."); return; }
-//           const armaTuBurritoRef = doc(productsRef, 'arma_tu_burrito'); const armaTuBurritoSnap = await getDoc(armaTuBurritoRef);
-//           const burritoCasaRef = doc(productsRef, 'burrito_casa'); const burritoCasaSnap = await getDoc(burritoCasaRef);
-//           const currentProductCountSnap = await getDocs(productsRef);
-//           let needsUpdate = false;
-//           if (!armaTuBurritoSnap.exists() || !armaTuBurritoSnap.data().customizationOptions || !armaTuBurritoSnap.data().customizationOptions.find(g => g.id === 'extras_arma_tu_burrito_combined') || !armaTuBurritoSnap.data().customizationOptions.find(g => g.id === 'queso_arma' && g.options.every(opt => !opt.priceChange))) { needsUpdate = true; }
-//           if (burritoCasaSnap.exists()) { const casaData = burritoCasaSnap.data(); if (!casaData.customizationOptions || !casaData.customizationOptions.find(opt => opt.id === 'aderezos_casa' && opt.maxChoices === 3) || !casaData.customizationOptions.find(opt => opt.id === 'chiles_casa') || !casaData.customizationOptions.find(opt => opt.id === 'extras_casa')) { needsUpdate = true; }
-//           } else { needsUpdate = true; }
-//           if (currentProductCountSnap.size !== MOCK_PRODUCTS.length) { needsUpdate = true; console.log(`Product count mismatch. Firestore: ${currentProductCountSnap.size}, Mock: ${MOCK_PRODUCTS.length}`); }
-//           if (!needsUpdate) { console.log("Brutal Burritos products (with refined customization logic) seem to be up-to-date in Firestore."); return; }
-//           console.log("Setting up/Updating Brutal Burritos products in Firestore due to structural changes or count mismatch...");
-//           const batch = writeBatch(db);
-//           MOCK_PRODUCTS.forEach(product => { const docRef = doc(productsRef, product.id); batch.set(docRef, product); });
-//           await batch.commit();
-//           console.log("Brutal Burritos products added/updated in Firestore.");
-// };
-
 let currentProductForCustomizationState = null;
 
 const Header = ({ currentPage, setCurrentPage, cartItemCount, isCustomizationPanelOpen, productBeingCustomizedName }) => {
@@ -142,7 +98,7 @@ const Header = ({ currentPage, setCurrentPage, cartItemCount, isCustomizationPan
         if (isCustomizationPanelOpen) return '';
         if (currentPage === 'home') return 'Brutal Burritos';
         if (currentPage === 'cart') return 'Brutal Burritos';
-        if (currentPage === 'checkout') return 'Haz tu Pedido';
+        if (currentPage === 'checkout') return 'Brutal Burritos'; // Changed for checkout page
         return 'Brutal Burritos';
     };
     const showMainHeaderBackButton = !isCustomizationPanelOpen && currentPage !== 'home';
@@ -182,15 +138,15 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
                     <div className="flex flex-col items-center w-full"> {/* Added flex-col items-center and w-full */}
                         <h2 className="text-2xl font-bold" style={{color: THEME_BRAND_RED}}>Brutal Burritos</h2>
                         {deliveryMode === 'delivery' && (
-                            <div className="flex flex-col sm:flex-row sm:space-x-4 items-start sm:items-center text-sm text-gray-600 mt-1 h-[40px] justify-center"> {/* Added h-[40px] and justify-center */}
-                                <div className="flex items-center mb-1 sm:mb-0"> {/* Entrega block */}
+                            <div className="flex flex-row space-x-4 items-center text-sm text-gray-600 mt-1 h-[40px] justify-center"> {/* Changed to flex-row, removed sm:flex-row, adjusted spacing */}
+                                <div className="flex items-center"> {/* Entrega block */}
                                     <Clock size={16} className="mr-1" />
                                     <div className="flex flex-col">
                                         <span className="text-xs text-gray-500">Entrega:</span>
                                         <span className="font-semibold text-gray-700">25-40 min</span>
                                     </div>
                                 </div>
-                                <span className="hidden sm:inline-block mx-2 text-gray-300">|</span> {/* Separator for desktop */}
+                                <span className="mx-2 text-gray-300">|</span> {/* Separator now always visible */}
                                 <div className="flex items-center"> {/* Envío block */}
                                     {/* Removed Truck icon */}
                                     <div className="flex flex-col">
@@ -201,7 +157,7 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
                             </div>
                         )}
                         {deliveryMode === 'pickup' && (
-                            <a href={pickupAddressLink} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 mt-1 flex items-start hover:underline h-[40px] justify-center" style={{color: THEME_BRAND_RED}}> {/* Added h-[40px] and justify-center */}
+                            <a href={pickupAddressLink} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 mt-1 flex items-start hover:underline h-[40px] justify-center" > {/* Removed inline style color, added text-gray-600 */}
                                 <MapPin size={16} className="mr-1 flex-shrink-0 mt-0.5" /> {/* Adjust margin-top for alignment */}
                                 <div className="flex flex-col">
                                     <span>{pickupAddressPart1}</span>
@@ -441,7 +397,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Haz tu pedido</h2>
 
         <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <h3 className="font-semibold mb-3 text-gray-700">Información de Contacto</h3>
+            <h3 className="font-semibold mb-3 text-gray-700">Cliente</h3> {/* Changed title to Cliente */}
             <div className="space-y-4">
                 <div>
                     <label htmlFor="customerName" className="block text-sm font-medium text-gray-600 mb-1">Nombre Completo</label>
@@ -534,7 +490,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     </button>
                     <button onClick={() => handlePaymentOptionSelect('cash')}
                                 className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${paymentMethod === 'cash' ? 'ring-2' : 'border-gray-300'}`}
-                                style={paymentMethod === 'cash' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
+                                style={paymentMethod === 'cash' ? {backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} > {/* Fixed duplicate backgroundColor */}
                         <DollarSign size={20} className="mr-2 text-gray-700"/>
                         <span className="text-sm text-gray-700">Efectivo</span>
                     </button>
@@ -586,7 +542,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     <span style={{color: deliveryFee > 0 ? THEME_BRAND_RED : 'inherit'}}>{formatPrice(deliveryFee)}</span>
                 </div>
             </div>
-            <p className="text-xs text-gray-400 mt-3 hover:underline cursor-pointer">Así funcionan nuestros costos</p>
+            {/* Removed "Así funcionan nuestros costos" text */}
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 shadow-top-strong max-w-4xl mx-auto">
@@ -597,7 +553,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                 </div>
                 <button
                     onClick={handleContinueToWhatsApp}
-                    className="text-black py-3 px-6 rounded-full transition-colors font-semibold text-md shadow-md"
+                    className="px-6 py-2 text-black rounded-full transition-colors font-semibold text-md shadow-md"
                     style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}}
                     disabled={!paymentMethod || paymentMethod === 'card_form_active' || (orderType === 'delivery' && (!streetAndNumber || !neighborhood || !zipCode)) || !customerName || !customerPhone}
                 >
@@ -621,7 +577,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                 const selection = selectedCustomizations[group.id];
                 if (group.type === 'radio' && !selection) return false;
                 if (group.type === 'checkbox') {
-                    const currentGroupSelections = selection || {};
+                    const currentGroupSelections = selectedCustomizations[group.id] || {}; // Corrected from selectedValue
                     if (Object.values(currentGroupSelections).every(v => !v)) return false;
                 }
                 if (group.type === 'textarea' && (!selection || selection.trim() === '')) return false;
@@ -629,6 +585,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
         }
         return true;
     }, [product.customizationOptions, selectedCustomizations]);
+
 
     const [allObligatoryDone, setAllObligatoryDone] = useState(true);
 
