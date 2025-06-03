@@ -169,26 +169,44 @@ const ProductCard = ({ product, onAddToCart, onCustomize }) => {
 
 const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, deliveryMode, setDeliveryMode }) => {
     const [selectedCategory, setSelectedCategory] = useState(DISPLAY_CATEGORIES[0]);
-    const pickupAddress = "Brutal Burritos, Calle 69E #224, Yucalpetén, Mérida, Yucatán";
-    const pickupAddressLink = `https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(pickupAddress)}`;
+    const pickupAddressPart1 = "Brutal Burritos, Calle 69E #224,";
+    const pickupAddressPart2 = "Yucalpetén, Mérida, Yucatán";
+    const fullPickupAddress = `${pickupAddressPart1} ${pickupAddressPart2}`;
+    const pickupAddressLink = `https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(fullPickupAddress)}`;
 
     return (
         <div className="pb-20">
             <div className="p-4 bg-white">
                 <div className="flex justify-between items-start mb-3">
-                    <div>
+                    {/* This div contains the h2 and the delivery/pickup info */}
+                    <div className="flex flex-col items-center w-full"> {/* Added flex-col items-center and w-full */}
                         <h2 className="text-2xl font-bold" style={{color: THEME_BRAND_RED}}>Brutal Burritos</h2>
                         {deliveryMode === 'delivery' && (
-                            <div className="flex items-center text-sm text-gray-600 flex-wrap mt-1">
-                                <Clock size={16} className="mr-1" /> <span className="mr-1">Entrega:</span> 25-40 min
-                                <span className="mx-2 text-gray-300">|</span>
-                                <span className="mr-1">Envío:</span><span className="font-semibold" style={{color: THEME_LIME_GREEN_DARKER}}>$40.00</span>
+                            <div className="flex flex-col sm:flex-row sm:space-x-4 items-start sm:items-center text-sm text-gray-600 mt-1 h-[40px] justify-center"> {/* Added h-[40px] and justify-center */}
+                                <div className="flex items-center mb-1 sm:mb-0"> {/* Entrega block */}
+                                    <Clock size={16} className="mr-1" />
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-gray-500">Entrega:</span>
+                                        <span className="font-semibold text-gray-700">25-40 min</span>
+                                    </div>
+                                </div>
+                                <span className="hidden sm:inline-block mx-2 text-gray-300">|</span> {/* Separator for desktop */}
+                                <div className="flex items-center"> {/* Envío block */}
+                                    {/* Removed Truck icon */}
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-gray-500">Envío:</span>
+                                        <span className="font-semibold" style={{color: THEME_LIME_GREEN_DARKER}}>$40.00</span>
+                                    </div>
+                                </div>
                             </div>
                         )}
                         {deliveryMode === 'pickup' && (
-                            <a href={pickupAddressLink} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 mt-1 flex items-center hover:underline" style={{color: THEME_BRAND_RED}}>
-                                <MapPin size={16} className="mr-1 flex-shrink-0" />
-                                <span>{pickupAddress}</span>
+                            <a href={pickupAddressLink} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 mt-1 flex items-start hover:underline h-[40px] justify-center" style={{color: THEME_BRAND_RED}}> {/* Added h-[40px] and justify-center */}
+                                <MapPin size={16} className="mr-1 flex-shrink-0 mt-0.5" /> {/* Adjust margin-top for alignment */}
+                                <div className="flex flex-col">
+                                    <span>{pickupAddressPart1}</span>
+                                    <span>{pickupAddressPart2}</span>
+                                </div>
                             </a>
                         )}
                     </div>
@@ -428,7 +446,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                 <div>
                     <label htmlFor="customerName" className="block text-sm font-medium text-gray-600 mb-1">Nombre Completo</label>
                     <input type="text" id="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Tu nombre aquí"
-                        className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent"
+                        className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
                         style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                 </div>
                 <div>
@@ -436,7 +454,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     <div className="flex items-center">
                         <span className="inline-flex items-center px-3 py-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-l-md">+52</span>
                         <input type="tel" id="customerPhone" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, ''))} placeholder="9991234567"
-                            className="w-full p-3 border border-gray-300 rounded-r-md text-sm focus:ring-2 focus:border-transparent"
+                            className="w-full p-3 border border-gray-300 rounded-r-md text-base focus:ring-2 focus:border-transparent" // Added text-base
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/>
                     </div>
                 </div>
@@ -456,34 +474,34 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         </div>
 
         {orderType === 'delivery' && (
-            <div className="bg-white p-4 rounded-lg shadow mb-6">
+            <div className="bg-white p-4 rounded-lg shadow mb-6 min-h-[250px] flex flex-col justify-center"> {/* Added flex flex-col justify-center */}
                 <h3 className="font-semibold mb-3 text-gray-700">Dirección de Entrega</h3>
-                <div className="space-y-4">
+                <div className="space-y-4 flex-grow"> {/* Added flex-grow */}
                     <div>
                         <label htmlFor="streetAndNumber" className="block text-sm font-medium text-gray-600 mb-1">Calle y Número</label>
                         <input type="text" id="streetAndNumber" value={streetAndNumber} onChange={(e) => setStreetAndNumber(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent"
+                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                     </div>
                      <div>
                         <label htmlFor="neighborhood" className="block text-sm font-medium text-gray-600 mb-1">Colonia</label>
                         <input type="text" id="neighborhood" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent"
+                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                     </div>
                      <div>
                         <label htmlFor="zipCode" className="block text-sm font-medium text-gray-600 mb-1">Código Postal</label>
                         <input type="text" id="zipCode" value={zipCode} onChange={(e) => setZipCode(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent"
+                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                     </div>
                 </div>
             </div>
         )}
         {orderType === 'pickup' && (
-            <div className="bg-white p-4 rounded-lg shadow mb-6">
+            <div className="bg-white p-4 rounded-lg shadow mb-6 min-h-[250px] flex flex-col"> {/* Added min-h and flex-col */}
                 <h3 className="font-semibold mb-2 text-gray-700">Dirección de Recolección</h3>
-                <div className="p-3 border border-gray-200 rounded-md bg-gray-50">
+                <div className="p-3 border border-gray-200 rounded-md bg-gray-50 flex flex-col justify-center flex-grow"> {/* Added flex-col, justify-center, flex-grow */}
                     <p className="text-sm text-gray-700 font-medium">Brutal Burritos</p>
                     <p className="text-sm text-gray-600">Calle 69E #224, Yucalpetén,</p>
                     <p className="text-sm text-gray-600">Mérida, Yucatán</p>
@@ -538,8 +556,8 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                 </div>
             ) : paymentMethod === 'card_form_active' ? (
                     <div className="mt-4 space-y-3">
-                        <div> <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-600 mb-1">Número de Tarjeta</label> <input type="text" id="cardNumber" value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').substring(0,16))} placeholder="0000 0000 0000 0000" maxLength="16" className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div>
-                        <div className="flex space-x-3"> <div className="flex-1"> <label htmlFor="cardExpiry" className="block text-xs font-medium text-gray-600 mb-1">Vencimiento (MM/AA)</label> <input type="text" id="cardExpiry" value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d{0,2})/, '$1/$2').substring(0,5))} placeholder="MM/AA" maxLength="5" className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div> <div className="flex-1"> <label htmlFor="cardCvv" className="block text-xs font-medium text-gray-600 mb-1">CVV</label> <input type="text" id="cardCvv" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').substring(0,4))} placeholder="123" maxLength="4" className="w-full p-3 border border-gray-300 rounded-md text-sm focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div> </div>
+                        <div> <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-600 mb-1">Número de Tarjeta</label> <input type="text" id="cardNumber" value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').substring(0,16))} placeholder="0000 0000 0000 0000" maxLength="16" className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div>
+                        <div className="flex space-x-3"> <div className="flex-1"> <label htmlFor="cardExpiry" className="block text-xs font-medium text-gray-600 mb-1">Vencimiento (MM/AA)</label> <input type="text" id="cardExpiry" value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d{0,2})/, '$1/$2').substring(0,5))} placeholder="MM/AA" maxLength="5" className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div> <div className="flex-1"> <label htmlFor="cardCvv" className="block text-xs font-medium text-gray-600 mb-1">CVV</label> <input type="text" id="cardCvv" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').substring(0,4))} placeholder="123" maxLength="4" className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div> </div>
                         <button onClick={handleSaveCard} className="w-full text-black py-2.5 px-4 rounded-lg transition-colors font-semibold text-sm shadow-md mt-3" style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}}> Guardar Tarjeta </button>
                         <button onClick={() => {setShowPaymentOptions(true); setPaymentMethod('card');}} className="w-full text-sm text-gray-600 hover:text-red-600 mt-2">Cancelar</button>
                     </div>
