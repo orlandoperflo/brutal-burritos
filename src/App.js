@@ -42,19 +42,19 @@ const THEME_LIME_GREEN_DARKER = '#8ACC1E';
 // try { firebaseConfig = JSON.parse(firebaseConfigString); } catch (e) { console.error("Error parsing Firebase config:", e); }
 // let app; let auth; let db;
 // if (firebaseConfig && firebaseConfig.apiKey) {
-//     try {
-//         app = initializeApp(firebaseConfig);
-//         auth = getAuth(app);
-//         db = getFirestore(app);
-//     } catch (e) {
-//         console.error("Error initializing Firebase:", e);
-//         auth = { currentUser: null, onAuthStateChanged: () => () => {}, signInAnonymously: async () => ({ user: { uid: 'anon-user-' + crypto.randomUUID() } }) };
-//         db = { collection: () => ({ onSnapshot: () => () => {}, doc: () => ({ get: async () => ({ exists: () => false, data: () => null }) }) }) };
-//     }
+//       try {
+//           app = initializeApp(firebaseConfig);
+//           auth = getAuth(app);
+//           db = getFirestore(app);
+//       } catch (e) {
+//           console.error("Error initializing Firebase:", e);
+//           auth = { currentUser: null, onAuthStateChanged: () => () => {}, signInAnonymously: async () => ({ user: { uid: 'anon-user-' + crypto.randomUUID() } }) };
+//           db = { collection: () => ({ onSnapshot: () => () => {}, doc: () => ({ get: async () => ({ exists: () => false, data: () => null }) }) }) };
+//       }
 // } else {
-//     console.warn("Firebase config not found. App will run with limited functionality.");
-//     auth = { currentUser: null, onAuthStateChanged: () => () => {}, signInAnonymously: async () => ({ user: { uid: 'anon-user-' + crypto.randomUUID() } }) };
-//     db = { collection: () => ({ onSnapshot: () => () => {}, doc: () => ({ get: async () => ({ exists: () => false, data: () => null }) }) }) };
+//       console.warn("Firebase config not found. App will run with limited functionality.");
+//       auth = { currentUser: null, onAuthStateChanged: () => () => {}, signInAnonymously: async () => ({ user: { uid: 'anon-user-' + crypto.randomUUID() } }) };
+//       db = { collection: () => ({ onSnapshot: () => () => {}, doc: () => ({ get: async () => ({ exists: () => false, data: () => null }) }) }) };
 // }
 
 // appId is now just a constant, no longer related to Firebase paths
@@ -62,42 +62,42 @@ const appId = 'brutal-burritos-app';
 
 
 const MOCK_PRODUCTS = [
-  { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Casa`, category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-  { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Chipotle`, category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-  { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Alambre`, category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-  { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Kid`, category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
-    customizationOptions: [
-        { id: 'proteina_kid', title: 'Elige Proteína (Kid)', type: 'radio', obligatorio: false, options: [{ label: 'Pollo', value: 'pollo_kid' }, { label: 'Res', value: 'res_kid' }] },
-        { id: 'aderezo_kid', title: 'Elige Aderezo (Kid)', type: 'radio', obligatorio: false, options: [{label: 'Ninguno', value: 'ninguno_kid'}, ...ADEREZOS_OPTIONS_BASE.slice(0,2)] },
-        { id: 'special_instructions_kid', title: 'Instrucciones Especiales (Kid)', type: 'textarea', placeholder: 'Ej: Sin picante...', obligatorio: false }
-    ]
-  },
-  { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Arma+Tu+Burrito`, category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
-    customizationOptions: [
-        { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ] },
-        { id: 'arroz_arma', title: '2. Arroz', type: 'radio', obligatorio: false, options: [{ label: 'Arroz Blanco', value: 'arroz_blanco' }, {label: 'Sin Arroz', value: 'sin_arroz'}] , isDefault: 'arroz_blanco'},
-        { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, { label: 'Frijoles Negros', value: 'frijoles_negros' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'},
-        { id: 'queso_arma', title: '4. Elige tu Queso (incluido)', type: 'radio', obligatorio: false, options: [{ label: 'Queso Oaxaca', value: 'queso_oaxaca_arma'}, { label: 'Queso Manchego', value: 'queso_manchego_arma' }, {label: 'Sin Queso', value: 'sin_queso_arma'}]},
-        { id: 'extras_arma_tu_burrito_combined', title: '5. Extras Brutales (con costo adicional)', type: 'checkbox', obligatorio: false, options: CUSTOMIZATION_EXTRAS_OPTIONS },
-        { id: 'aderezos_arma', title: '6. Aderezos (elige hasta 2)', type: 'checkbox', options: ADEREZOS_OPTIONS_BASE, maxChoices: 2, obligatorio: false },
-        { id: 'chiles_tatemados_arma', title: '7. Chiles Tatemados (opcional)', type: 'checkbox', options: CHILES_TATEMADOS_OPTIONS, obligatorio: false },
-        { id: 'special_instructions_arma', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Cualquier detalle adicional...', obligatorio: false }
-    ]
-  },
-  { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Familiar`, category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
-    customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnición Ensaladas', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
-  },
-  { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Duo`, category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
-    customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnición Ensaladas', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
-  },
-  { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Original`, category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
-  },
-  { id: 'bebida_agua_1l', name: 'Agua del Día 1L', price: 45.00, imageUrl: `https://placehold.co/300x200/A1887F/FFFFFF?text=Agua+1L`, category: 'Bebidas', description: 'Agua fresca del día, tamaño 1 litro.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
-  { id: 'bebida_agua_500ml', name: 'Agua del Día 500ml', price: 25.00, imageUrl: `https://placehold.co/300x200/A1887F/FFFFFF?text=Agua+500ml`, category: 'Bebidas', description: 'Agua fresca del día, tamaño 500 mililitros.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
-  { id: 'comp_papas', name: 'Papas Fritas', price: 30.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Papas+Fritas`, category: 'Complementos', description: 'Crujientes papas fritas.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien doradas...', obligatorio: false }] },
-  { id: 'comp_ensalada', name: 'Ensalada', price: 20.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Ensalada`, category: 'Complementos', description: 'Lechuga y jitomate.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Sin jitomate...', obligatorio: false }] },
-  { id: 'comp_verduras', name: 'Verduras al Vapor', price: 30.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Verduras`, category: 'Complementos', description: 'Zanahoria, calabaza italiana y brócoli.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien cocidas...', obligatorio: false }] },
-  ...ADEREZOS_OPTIONS_BASE.map(aderezo => ({ id: `aderezo_extra_${aderezo.value}`, name: `Aderezo Extra: ${aderezo.label}`, price: 10.00, imageUrl: `https://placehold.co/150x150/BCAAA4/000000?text=${aderezo.label.substring(0,10)}`, category: 'Extras', description: `Porción extra de aderezo ${aderezo.label}.`, customizable: false }))
+    { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Casa`, category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Chipotle`, category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Alambre`, category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Kid`, category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
+        customizationOptions: [
+            { id: 'proteina_kid', title: 'Elige Proteína (Kid)', type: 'radio', obligatorio: false, options: [{ label: 'Pollo', value: 'pollo_kid' }, { label: 'Res', value: 'res_kid' }] },
+            { id: 'aderezo_kid', title: 'Elige Aderezo (Kid)', type: 'radio', obligatorio: false, options: [{label: 'Ninguno', value: 'ninguno_kid'}, ...ADEREZOS_OPTIONS_BASE.slice(0,2)] },
+            { id: 'special_instructions_kid', title: 'Instrucciones Especiales (Kid)', type: 'textarea', placeholder: 'Ej: Sin picante...', obligatorio: false }
+        ]
+    },
+    { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Arma+Tu+Burrito`, category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
+        customizationOptions: [
+            { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ] },
+            { id: 'arroz_arma', title: '2. Arroz', type: 'radio', obligatorio: false, options: [{ label: 'Arroz Blanco', value: 'arroz_blanco' }, {label: 'Sin Arroz', value: 'sin_arroz'}] , isDefault: 'arroz_blanco'},
+            { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, { label: 'Frijoles Negros', value: 'frijoles_negros' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'},
+            { id: 'queso_arma', title: '4. Elige tu Queso (incluido)', type: 'radio', obligatorio: false, options: [{ label: 'Queso Oaxaca', value: 'queso_oaxaca_arma'}, { label: 'Queso Manchego', value: 'queso_manchego_arma' }, {label: 'Sin Queso', value: 'sin_queso_arma'}]},
+            { id: 'extras_arma_tu_burrito_combined', title: '5. Extras Brutales (con costo adicional)', type: 'checkbox', obligatorio: false, options: CUSTOMIZATION_EXTRAS_OPTIONS },
+            { id: 'aderezos_arma', title: '6. Aderezos (elige hasta 2)', type: 'checkbox', options: ADEREZOS_OPTIONS_BASE, maxChoices: 2, obligatorio: false },
+            { id: 'chiles_tatemados_arma', title: '7. Chiles Tatemados (opcional)', type: 'checkbox', options: CHILES_TATEMADOS_OPTIONS, obligatorio: false },
+            { id: 'special_instructions_arma', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Cualquier detalle adicional...', obligatorio: false }
+        ]
+    },
+    { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Familiar`, category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
+        customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnición Ensaladas', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+    },
+    { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Duo`, category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
+        customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnición Ensaladas', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+    },
+    { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Original`, category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+    },
+    { id: 'bebida_agua_1l', name: 'Agua del Día 1L', price: 45.00, imageUrl: `https://placehold.co/300x200/A1887F/FFFFFF?text=Agua+1L`, category: 'Bebidas', description: 'Agua fresca del día, tamaño 1 litro.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
+    { id: 'bebida_agua_500ml', name: 'Agua del Día 500ml', price: 25.00, imageUrl: `https://placehold.co/300x200/A1887F/FFFFFF?text=Agua+500ml`, category: 'Bebidas', description: 'Agua fresca del día, tamaño 500 mililitros.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
+    { id: 'comp_papas', name: 'Papas Fritas', price: 30.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Papas+Fritas`, category: 'Complementos', description: 'Crujientes papas fritas.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien doradas...', obligatorio: false }] },
+    { id: 'comp_ensalada', name: 'Ensalada', price: 20.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Ensalada`, category: 'Complementos', description: 'Lechuga y jitomate.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Sin jitomate...', obligatorio: false }] },
+    { id: 'comp_verduras', name: 'Verduras al Vapor', price: 30.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Verduras`, category: 'Complementos', description: 'Zanahoria, calabaza italiana y brócoli.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien cocidas...', obligatorio: false }] },
+    ...ADEREZOS_OPTIONS_BASE.map(aderezo => ({ id: `aderezo_extra_${aderezo.value}`, name: aderezo.label, price: 10.00, imageUrl: `https://placehold.co/150x150/BCAAA4/000000?text=${aderezo.label.substring(0,10)}`, category: 'Extras', description: `Porción extra de aderezo ${aderezo.label}.`, customizable: false }))
 ];
 
 const MOCK_COMPLEMENTARY_PRODUCTS = [
@@ -113,25 +113,24 @@ const formatPrice = (price) => price ? `$${price.toFixed(2)}` : '$0.00';
 
 // Removed setupProductsInFirestore as it interacts with Firestore
 // const setupProductsInFirestore = async () => {
-//     if (!db || !(firebaseConfig && firebaseConfig.apiKey)) return;
-//     const productsRef = collection(db, `/artifacts/${appId}/public/data/products`);
-//     try {
-//         if (MOCK_PRODUCTS.length === 0) { console.log("MOCK_PRODUCTS is empty, skipping setup."); return; }
-//         const armaTuBurritoRef = doc(productsRef, 'arma_tu_burrito'); const armaTuBurritoSnap = await getDoc(armaTuBurritoRef);
-//         const burritoCasaRef = doc(productsRef, 'burrito_casa'); const burritoCasaSnap = await getDoc(burritoCasaRef);
-//         const currentProductCountSnap = await getDocs(productsRef);
-//         let needsUpdate = false;
-//         if (!armaTuBurritoSnap.exists() || !armaTuBurritoSnap.data().customizationOptions || !armaTuBurritoSnap.data().customizationOptions.find(g => g.id === 'extras_arma_tu_burrito_combined') || !armaTuBurritoSnap.data().customizationOptions.find(g => g.id === 'queso_arma' && g.options.every(opt => !opt.priceChange))) { needsUpdate = true; }
-//         if (burritoCasaSnap.exists()) { const casaData = burritoCasaSnap.data(); if (!casaData.customizationOptions || !casaData.customizationOptions.find(opt => opt.id === 'aderezos_casa' && opt.maxChoices === 3) || !casaData.customizationOptions.find(opt => opt.id === 'chiles_casa') || !casaData.customizationOptions.find(opt => opt.id === 'extras_casa')) { needsUpdate = true; }
-//         } else { needsUpdate = true; }
-//         if (currentProductCountSnap.size !== MOCK_PRODUCTS.length) { needsUpdate = true; console.log(`Product count mismatch. Firestore: ${currentProductCountSnap.size}, Mock: ${MOCK_PRODUCTS.length}`); }
-//         if (!needsUpdate) { console.log("Brutal Burritos products (with refined customization logic) seem to be up-to-date in Firestore."); return; }
-//         console.log("Setting up/Updating Brutal Burritos products in Firestore due to structural changes or count mismatch...");
-//         const batch = writeBatch(db);
-//         MOCK_PRODUCTS.forEach(product => { const docRef = doc(productsRef, product.id); batch.set(docRef, product); });
-//         await batch.commit();
-//         console.log("Brutal Burritos products added/updated in Firestore.");
-//     } catch (error) { console.error("Error setting up Brutal Burritos products in Firestore: ", error); }
+//       if (!db || !(firebaseConfig && firebaseConfig.apiKey)) return;
+//       const productsRef = collection(db, `/artifacts/${appId}/public/data/products`);
+//       try {
+//           if (MOCK_PRODUCTS.length === 0) { console.log("MOCK_PRODUCTS is empty, skipping setup."); return; }
+//           const armaTuBurritoRef = doc(productsRef, 'arma_tu_burrito'); const armaTuBurritoSnap = await getDoc(armaTuBurritoRef);
+//           const burritoCasaRef = doc(productsRef, 'burrito_casa'); const burritoCasaSnap = await getDoc(burritoCasaRef);
+//           const currentProductCountSnap = await getDocs(productsRef);
+//           let needsUpdate = false;
+//           if (!armaTuBurritoSnap.exists() || !armaTuBurritoSnap.data().customizationOptions || !armaTuBurritoSnap.data().customizationOptions.find(g => g.id === 'extras_arma_tu_burrito_combined') || !armaTuBurritoSnap.data().customizationOptions.find(g => g.id === 'queso_arma' && g.options.every(opt => !opt.priceChange))) { needsUpdate = true; }
+//           if (burritoCasaSnap.exists()) { const casaData = burritoCasaSnap.data(); if (!casaData.customizationOptions || !casaData.customizationOptions.find(opt => opt.id === 'aderezos_casa' && opt.maxChoices === 3) || !casaData.customizationOptions.find(opt => opt.id === 'chiles_casa') || !casaData.customizationOptions.find(opt => opt.id === 'extras_casa')) { needsUpdate = true; }
+//           } else { needsUpdate = true; }
+//           if (currentProductCountSnap.size !== MOCK_PRODUCTS.length) { needsUpdate = true; console.log(`Product count mismatch. Firestore: ${currentProductCountSnap.size}, Mock: ${MOCK_PRODUCTS.length}`); }
+//           if (!needsUpdate) { console.log("Brutal Burritos products (with refined customization logic) seem to be up-to-date in Firestore."); return; }
+//           console.log("Setting up/Updating Brutal Burritos products in Firestore due to structural changes or count mismatch...");
+//           const batch = writeBatch(db);
+//           MOCK_PRODUCTS.forEach(product => { const docRef = doc(productsRef, product.id); batch.set(docRef, product); });
+//           await batch.commit();
+//           console.log("Brutal Burritos products added/updated in Firestore.");
 // };
 
 let currentProductForCustomizationState = null;
@@ -759,9 +758,9 @@ function App() {
 
     // Removed setupProductsInFirestore useEffect (no Firestore)
     // useEffect(() => {
-    //     if (isAuthReady && process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).apiKey && db) {
-    //         setupProductsInFirestore();
-    //     }
+    //       if (isAuthReady && process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).apiKey && db) {
+    //           setupProductsInFirestore();
+    //       }
     // }, [isAuthReady]);
 
     // Products are now always from MOCK_PRODUCTS, no fetching needed
@@ -776,10 +775,10 @@ function App() {
 
     // Cart items are now managed entirely in local state, no Firestore listener
     // useEffect(() => {
-    //     if (!userId || !isAuthReady || !(process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).apiKey && db)) { return; }
-    //     const cartRef = collection(db, `/artifacts/${appId}/users/${userId}/cartItems`);
-    //     const unsubscribeCart = onSnapshot(cartRef, (snapshot) => { setCartItems(snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))); }, (error) => { console.error("Error fetching cart: ", error); });
-    //     return () => unsubscribeCart();
+    //       if (!userId || !isAuthReady || !(process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).apiKey && db)) { return; }
+    //       const cartRef = collection(db, `/artifacts/${appId}/users/${userId}/cartItems`);
+    //       const unsubscribeCart = onSnapshot(cartRef, (snapshot) => { setCartItems(snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))); }, (error) => { console.error("Error fetching cart: ", error); });
+    //       return () => unsubscribeCart();
     // }, [userId, isAuthReady, appId]);
 
     const handleOpenCustomizationPanel = (product, cartItemToEdit = null) => {
