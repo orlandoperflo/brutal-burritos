@@ -1,0 +1,56 @@
+/* src/index.css */
+
+/* Basic reset and box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Tailwind base styles are usually injected here if you're using PostCSS */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom scrollbar for better UX on overflow-x-auto */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* For IE and Edge */
+    scrollbar-width: none;  /* For Firefox */
+}
+
+/* Optional: Thin scrollbar for specific elements */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Shadow for fixed bottom elements */
+.shadow-top-strong {
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+
