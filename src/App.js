@@ -38,44 +38,58 @@ const THEME_LIME_GREEN_DARKER = '#8ACC1E';
 // appId is now just a constant, no longer related to Firebase paths
 const appId = 'brutal-burritos-app';
 
+// New image URL for all burritos
+const BURRITO_IMAGE_URL = 'https://raw.githubusercontent.com/orlandoperflo/brutal-burritos/refs/heads/main/grilled-beef-tortilla-with-fresh-guacamole-generated-by-ai.png';
+// New image URLs for other categories
+const COMBOS_IMAGE_URL = 'https://raw.githubusercontent.com/orlandoperflo/brutal-burritos/refs/heads/main/freepik__only-2-stacked-burritos-with-shredded-meat-lettuce__64261.jpeg';
+const FRENCH_FRIES_IMAGE_URL = 'https://www.cookwithnabeela.com/wp-content/uploads/2024/02/FrenchFries-480x270.webp';
+const VEGETABLES_IMAGE_URL = 'https://i.blogs.es/0dbf5a/copia-de-portada---2025-01-23t164049.985/1366_2000.jpg';
+const DRINKS_IMAGE_URL = 'https://kokomexico.com/wp-content/uploads/2022/05/Aguas-Frescas1-770x441.jpg';
+const SALSA_VERDE_IMAGE_URL = 'https://www.mexicoenmicocina.com/wp-content/uploads/2016/08/salsa-verde-copy.jpg';
+const CHIPOTLE_DULCE_IMAGE_URL = 'https://img.sunset02.com/sites/default/files/image/recipes/su/04/10/chipotle-salsa-mr-x.jpg';
+const CREMA_DE_AJO_IMAGE_URL = 'https://mojo.generalmills.com/api/public/content/WuaPo5TgaU2KiF4Rh7r9eQ_gmi_hi_res_jpeg.jpeg?v=f77d0b29&t=16e3ce250f244648bef28c5949fb99ff';
+const SALAD_IMAGE_URL = 'https://saladonaroll.com/wp-content/uploads/2023/02/lettuce-cucumber-tomato-salad.jpg';
+
 
 const MOCK_PRODUCTS = [
-    { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Casa`, category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-    { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Chipotle`, category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-    { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Alambre`, category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-    { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Burrito+Kid`, category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
+    { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
         customizationOptions: [
             { id: 'proteina_kid', title: 'Elige Proteína (Kid)', type: 'radio', obligatorio: false, options: [{ label: 'Pollo', value: 'pollo_kid' }, { label: 'Res', value: 'res_kid' }] },
             { id: 'aderezo_kid', title: 'Elige Aderezo (Kid)', type: 'radio', obligatorio: false, options: [{label: 'Ninguno', value: 'ninguno_kid'}, ...ADEREZOS_OPTIONS_BASE.slice(0,2)] },
             { id: 'special_instructions_kid', title: 'Instrucciones Especiales (Kid)', type: 'textarea', placeholder: 'Ej: Sin picante...', obligatorio: false }
         ]
     },
-    { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Arma+Tu+Burrito`, category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
+    { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: BURRITO_IMAGE_URL, category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
         customizationOptions: [
             { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ] },
             { id: 'arroz_arma', title: '2. Arroz', type: 'radio', obligatorio: false, options: [{ label: 'Arroz Blanco', value: 'arroz_blanco' }, {label: 'Sin Arroz', value: 'sin_arroz'}] , isDefault: 'arroz_blanco'},
-            { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'}, // Removed Frijoles Negros
+            { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'},
             { id: 'queso_arma', title: '4. Elige tu Queso (incluido)', type: 'radio', obligatorio: false, options: [{ label: 'Queso Oaxaca', value: 'queso_oaxaca_arma'}, { label: 'Queso Manchego', value: 'queso_manchego_arma' }, {label: 'Sin Queso', value: 'sin_queso_arma'}]},
             { id: 'extras_arma_tu_burrito_combined', title: '5. Extras Brutales (con costo adicional)', type: 'checkbox', obligatorio: false, options: CUSTOMIZATION_EXTRAS_OPTIONS },
-            { id: 'aderezos_arma', title: '6. Aderezos (elige hasta 3)', type: 'checkbox', options: ADEREZOS_OPTIONS_BASE, maxChoices: 3, obligatorio: false }, // Changed maxChoices to 3
+            { id: 'aderezos_arma', title: '6. Aderezos (elige hasta 3)', type: 'checkbox', options: ADEREZOS_OPTIONS_BASE, maxChoices: 3, obligatorio: false },
             { id: 'chiles_tatemados_arma', title: '7. Chiles Tatemados (opcional)', type: 'checkbox', options: CHILES_TATEMADOS_OPTIONS, obligatorio: false },
             { id: 'special_instructions_arma', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Cualquier detalle adicional...', obligatorio: false }
         ]
     },
-    { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Familiar`, category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
-        customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ] // Changed title to Guarnicion
+    { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: COMBOS_IMAGE_URL, category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
+        customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
-    { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Duo`, category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
-        customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ] // Changed title to Guarnicion
+    { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: COMBOS_IMAGE_URL, category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
+        customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
-    { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: `https://placehold.co/300x200/${THEME_BRAND_RED.substring(1)}/FFFFFF?text=Combo+Original`, category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+    { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: COMBOS_IMAGE_URL, category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
-    { id: 'bebida_agua_1l', name: 'Agua del Día 1L', price: 45.00, imageUrl: `https://placehold.co/300x200/A1887F/FFFFFF?text=Agua+1L`, category: 'Bebidas', description: 'Agua fresca del día, tamaño 1 litro.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
-    { id: 'bebida_agua_500ml', name: 'Agua del Día 500ml', price: 25.00, imageUrl: `https://placehold.co/300x200/A1887F/FFFFFF?text=Agua+500ml`, category: 'Bebidas', description: 'Agua fresca del día, tamaño 500 mililitros.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
-    { id: 'comp_papas', name: 'Papas Fritas', price: 30.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Papas+Fritas`, category: 'Complementos', description: 'Crujientes papas fritas.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien doradas...', obligatorio: false }] },
-    { id: 'comp_ensalada', name: 'Ensalada', price: 20.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Ensalada`, category: 'Complementos', description: 'Lechuga y jitomate.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Sin jitomate...', obligatorio: false }] },
-    { id: 'comp_verduras', name: 'Verduras al Vapor', price: 30.00, imageUrl: `https://placehold.co/300x200/D7CCC8/000000?text=Verduras`, category: 'Complementos', description: 'Zanahoria, calabaza italiana y brócoli.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien cocidas...', obligatorio: false }] },
-    ...ADEREZOS_OPTIONS_BASE.map(aderezo => ({ id: `aderezo_extra_${aderezo.value}`, name: aderezo.label, price: 10.00, imageUrl: `https://placehold.co/150x150/BCAAA4/000000?text=${aderezo.label.substring(0,10)}`, category: 'Extras', description: `Porción extra de aderezo ${aderezo.label}.`, customizable: false }))
+    { id: 'bebida_agua_1l', name: 'Agua del Día 1L', price: 45.00, imageUrl: DRINKS_IMAGE_URL, category: 'Bebidas', description: 'Agua fresca del día, tamaño 1 litro.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
+    { id: 'bebida_agua_500ml', name: 'Agua del Día 500ml', price: 25.00, imageUrl: DRINKS_IMAGE_URL, category: 'Bebidas', description: 'Agua fresca del día, tamaño 500 mililitros.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
+    { id: 'comp_papas', name: 'Papas Fritas', price: 30.00, imageUrl: FRENCH_FRIES_IMAGE_URL, category: 'Complementos', description: 'Crujientes papas fritas.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien doradas...', obligatorio: false }] },
+    { id: 'comp_ensalada', name: 'Ensalada', price: 20.00, imageUrl: SALAD_IMAGE_URL, category: 'Complementos', description: 'Lechuga y jitomate.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Sin jitomate...', obligatorio: false }] },
+    { id: 'comp_verduras', name: 'Verduras al Vapor', price: 30.00, imageUrl: VEGETABLES_IMAGE_URL, category: 'Complementos', description: 'Zanahoria, calabaza italiana y brócoli.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien cocidas...', obligatorio: false }] },
+    { id: `aderezo_extra_salsa_verde`, name: ADEREZOS_OPTIONS_BASE[0].label, price: 10.00, imageUrl: SALSA_VERDE_IMAGE_URL, category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[0].label}.`, customizable: false },
+    { id: `aderezo_extra_chipotle_dulce`, name: ADEREZOS_OPTIONS_BASE[1].label, price: 10.00, imageUrl: CHIPOTLE_DULCE_IMAGE_URL, category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[1].label}.`, customizable: false },
+    { id: `aderezo_extra_crema_ajo_pica`, name: ADEREZOS_OPTIONS_BASE[2].label, price: 10.00, imageUrl: CREMA_DE_AJO_IMAGE_URL, category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[2].label}.`, customizable: false }
 ];
 
 const MOCK_COMPLEMENTARY_PRODUCTS = [
@@ -98,7 +112,7 @@ const Header = ({ currentPage, setCurrentPage, cartItemCount, isCustomizationPan
         if (isCustomizationPanelOpen) return '';
         if (currentPage === 'home') return 'Brutal Burritos';
         if (currentPage === 'cart') return 'Brutal Burritos';
-        if (currentPage === 'checkout') return 'Brutal Burritos'; // Changed for checkout page
+        if (currentPage === 'checkout') return 'Brutal Burritos';
         return 'Brutal Burritos';
     };
     const showMainHeaderBackButton = !isCustomizationPanelOpen && currentPage !== 'home';
@@ -397,12 +411,12 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Haz tu pedido</h2>
 
         <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <h3 className="font-semibold mb-3 text-gray-700">Cliente</h3> {/* Changed title to Cliente */}
+            <h3 className="font-semibold mb-3 text-gray-700">Cliente</h3>
             <div className="space-y-4">
                 <div>
                     <label htmlFor="customerName" className="block text-sm font-medium text-gray-600 mb-1">Nombre Completo</label>
                     <input type="text" id="customerName" value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Tu nombre aquí"
-                        className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
+                        className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent"
                         style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                 </div>
                 <div>
@@ -410,7 +424,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     <div className="flex items-center">
                         <span className="inline-flex items-center px-3 py-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-l-md">+52</span>
                         <input type="tel" id="customerPhone" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, ''))} placeholder="9991234567"
-                            className="w-full p-3 border border-gray-300 rounded-r-md text-base focus:ring-2 focus:border-transparent" // Added text-base
+                            className="w-full p-3 border border-gray-300 rounded-r-md text-base focus:ring-2 focus:border-transparent"
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/>
                     </div>
                 </div>
@@ -430,34 +444,34 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         </div>
 
         {orderType === 'delivery' && (
-            <div className="bg-white p-4 rounded-lg shadow mb-6 min-h-[250px] flex flex-col justify-center"> {/* Added flex flex-col justify-center */}
+            <div className="bg-white p-4 rounded-lg shadow mb-6 min-h-[250px] flex flex-col justify-center">
                 <h3 className="font-semibold mb-3 text-gray-700">Dirección de Entrega</h3>
-                <div className="space-y-4 flex-grow"> {/* Added flex-grow */}
+                <div className="space-y-4 flex-grow">
                     <div>
                         <label htmlFor="streetAndNumber" className="block text-sm font-medium text-gray-600 mb-1">Calle y Número</label>
                         <input type="text" id="streetAndNumber" value={streetAndNumber} onChange={(e) => setStreetAndNumber(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
+                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent"
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                     </div>
                      <div>
                         <label htmlFor="neighborhood" className="block text-sm font-medium text-gray-600 mb-1">Colonia</label>
                         <input type="text" id="neighborhood" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
+                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent"
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                     </div>
                      <div>
                         <label htmlFor="zipCode" className="block text-sm font-medium text-gray-600 mb-1">Código Postal</label>
                         <input type="text" id="zipCode" value={zipCode} onChange={(e) => setZipCode(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" // Added text-base
+                            className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent"
                             style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
                     </div>
                 </div>
             </div>
         )}
         {orderType === 'pickup' && (
-            <div className="bg-white p-4 rounded-lg shadow mb-6 min-h-[250px] flex flex-col"> {/* Added min-h and flex-col */}
+            <div className="bg-white p-4 rounded-lg shadow mb-6 min-h-[250px] flex flex-col">
                 <h3 className="font-semibold mb-2 text-gray-700">Dirección de Recolección</h3>
-                <div className="p-3 border border-gray-200 rounded-md bg-gray-50 flex flex-col justify-center flex-grow"> {/* Added flex-col, justify-center, flex-grow */}
+                <div className="p-3 border border-gray-200 rounded-md bg-gray-50 flex flex-col justify-center flex-grow">
                     <p className="text-sm text-gray-700 font-medium">Brutal Burritos</p>
                     <p className="text-sm text-gray-600">Calle 69E #224, Yucalpetén,</p>
                     <p className="text-sm text-gray-600">Mérida, Yucatán</p>
@@ -490,7 +504,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     </button>
                     <button onClick={() => handlePaymentOptionSelect('cash')}
                                 className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${paymentMethod === 'cash' ? 'ring-2' : 'border-gray-300'}`}
-                                style={paymentMethod === 'cash' ? {backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} > {/* Fixed duplicate backgroundColor */}
+                                style={paymentMethod === 'cash' ? {backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
                         <DollarSign size={20} className="mr-2 text-gray-700"/>
                         <span className="text-sm text-gray-700">Efectivo</span>
                     </button>
@@ -577,7 +591,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                 const selection = selectedCustomizations[group.id];
                 if (group.type === 'radio' && !selection) return false;
                 if (group.type === 'checkbox') {
-                    const currentGroupSelections = selectedCustomizations[group.id] || {}; // Corrected from selectedValue
+                    const currentGroupSelections = selectedCustomizations[group.id] || {};
                     if (Object.values(currentGroupSelections).every(v => !v)) return false;
                 }
                 if (group.type === 'textarea' && (!selection || selection.trim() === '')) return false;
