@@ -52,17 +52,17 @@ const SALAD_IMAGE_URL = 'https://saladonaroll.com/wp-content/uploads/2023/02/let
 
 
 const MOCK_PRODUCTS = [
-    { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-    { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-    { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
-    { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: BURRITO_IMAGE_URL, category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
+    { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: 'https://acidwaves.art/DSC04525-2.webp', category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: 'https://acidwaves.art/DSC04511light.webp', category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: 'https://acidwaves.art/DSC04529light.webp', category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: 'https://acidwaves.art/DSC04598 (1).webp', category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
         customizationOptions: [
             { id: 'proteina_kid', title: 'Elige Proteína (Kid)', type: 'radio', obligatorio: false, options: [{ label: 'Pollo', value: 'pollo_kid' }, { label: 'Res', value: 'res_kid' }] },
             { id: 'aderezo_kid', title: 'Elige Aderezo (Kid)', type: 'radio', obligatorio: false, options: [{label: 'Ninguno', value: 'ninguno_kid'}, ...ADEREZOS_OPTIONS_BASE.slice(0,2)] },
             { id: 'special_instructions_kid', title: 'Instrucciones Especiales (Kid)', type: 'textarea', placeholder: 'Ej: Sin picante...', obligatorio: false }
         ]
     },
-    { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: BURRITO_IMAGE_URL, category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
+    { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: 'https://acidwaves.art/DSC04572light.webp', category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
         customizationOptions: [
             { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ] },
             { id: 'arroz_arma', title: '2. Arroz', type: 'radio', obligatorio: false, options: [{ label: 'Arroz Blanco', value: 'arroz_blanco' }, {label: 'Sin Arroz', value: 'sin_arroz'}] , isDefault: 'arroz_blanco'},
@@ -74,22 +74,22 @@ const MOCK_PRODUCTS = [
             { id: 'special_instructions_arma', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Cualquier detalle adicional...', obligatorio: false }
         ]
     },
-    { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: COMBOS_IMAGE_URL, category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
+    { id: 'combo_familiar', name: 'Combo Familiar', price: 650.00, imageUrl: 'https://acidwaves.art/DSC04563-black (2).webp', category: 'Combos', description: '2 Burritos de la casa, 2 Burritos kids, 2 Agua fresca del dia 1L, 4 Ensaladas. Cambia ensaladas por papas fritas (+$20).', customizable: true,
         customizationOptions: [ { id: 'cambio_ensalada_familiar', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '4 Ensaladas (Incluido)', value: 'ensaladas'}, {label: '4 Papas Fritas (+$20)', value: 'papas_fritas', priceChange: 20.00}]}, { id: 'special_instructions_familiar', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
-    { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: COMBOS_IMAGE_URL, category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
+    { id: 'combo_duo', name: 'Combo Duo', price: 390.00, imageUrl: 'https://acidwaves.art/DSC04536-Photoroom.webp', category: 'Combos', description: '2 Burritos originales de bistec con guacamole y queso, Agua fresca del dia 1L, 2 Ensaladas. Cambia ensaladas por papas fritas (+$10).', customizable: true,
         customizationOptions: [ { id: 'cambio_ensalada_duo', title: 'Guarnicion', type: 'radio', obligatorio: false, options: [{label: '2 Ensaladas (Incluido)', value: 'ensaladas_duo'}, {label: '2 Papas Fritas (+$10)', value: 'papas_fritas_duo', priceChange: 10.00}]}, { id: 'special_instructions_duo', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
-    { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: COMBOS_IMAGE_URL, category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
+    { id: 'combo_original', name: 'Combo Original', price: 215.00, imageUrl: 'https://acidwaves.art/DSC04581-nobgv2.webp', category: 'Combos', description: '1 Burrito original de arrachera con guacamole y queso, Agua fresca del dia 500ml, 1 Ensalada.', customizable: true, customizationOptions: [ { id: 'special_instructions_original', title: 'Instrucciones Especiales para el Combo', type: 'textarea', placeholder: 'Preferencias generales...', obligatorio: false } ]
     },
-    { id: 'bebida_agua_1l', name: 'Agua del Día 1L', price: 45.00, imageUrl: DRINKS_IMAGE_URL, category: 'Bebidas', description: 'Agua fresca del día, tamaño 1 litro.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
-    { id: 'bebida_agua_500ml', name: 'Agua del Día 500ml', price: 25.00, imageUrl: DRINKS_IMAGE_URL, category: 'Bebidas', description: 'Agua fresca del día, tamaño 500 mililitros.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
-    { id: 'comp_papas', name: 'Papas Fritas', price: 30.00, imageUrl: FRENCH_FRIES_IMAGE_URL, category: 'Complementos', description: 'Crujientes papas fritas.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien doradas...', obligatorio: false }] },
-    { id: 'comp_ensalada', name: 'Ensalada', price: 20.00, imageUrl: SALAD_IMAGE_URL, category: 'Complementos', description: 'Lechuga y jitomate.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Sin jitomate...', obligatorio: false }] },
-    { id: 'comp_verduras', name: 'Verduras al Vapor', price: 30.00, imageUrl: VEGETABLES_IMAGE_URL, category: 'Complementos', description: 'Zanahoria, calabaza italiana y brócoli.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien cocidas...', obligatorio: false }] },
-    { id: `aderezo_extra_salsa_verde`, name: ADEREZOS_OPTIONS_BASE[0].label, price: 10.00, imageUrl: SALSA_VERDE_IMAGE_URL, category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[0].label}.`, customizable: false },
-    { id: `aderezo_extra_chipotle_dulce`, name: ADEREZOS_OPTIONS_BASE[1].label, price: 10.00, imageUrl: CHIPOTLE_DULCE_IMAGE_URL, category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[1].label}.`, customizable: false },
-    { id: `aderezo_extra_crema_ajo_pica`, name: ADEREZOS_OPTIONS_BASE[2].label, price: 10.00, imageUrl: CREMA_DE_AJO_IMAGE_URL, category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[2].label}.`, customizable: false }
+    { id: 'bebida_agua_1l', name: 'Agua del Día 1L', price: 45.00, imageUrl: 'https://acidwaves.art/Adobe Express - file.webp', category: 'Bebidas', description: 'Agua fresca del día, tamaño 1 litro.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
+    { id: 'bebida_agua_500ml', name: 'Agua del Día 500ml', price: 25.00, imageUrl: 'https://acidwaves.art/Adobe Express - file2.webp', category: 'Bebidas', description: 'Agua fresca del día, tamaño 500 mililitros.', customizable: true, customizationOptions: [{ id: 'special_instructions_bebida', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Con poco hielo...', obligatorio: false }] },
+    { id: 'comp_papas', name: 'Papas Fritas', price: 30.00, imageUrl: 'https://acidwaves.art/DSC04498light.webp', category: 'Complementos', description: 'Crujientes papas fritas.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien doradas...', obligatorio: false }] },
+    { id: 'comp_ensalada', name: 'Ensalada', price: 20.00, imageUrl: 'https://acidwaves.art/DSC04568light.webp', category: 'Complementos', description: 'Lechuga y jitomate.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Sin jitomate...', obligatorio: false }] },
+    { id: 'comp_verduras', name: 'Verduras al Vapor', price: 30.00, imageUrl: 'https://acidwaves.art/DSC04588light.webp', category: 'Complementos', description: 'Zanahoria, calabaza italiana y brócoli.', customizable: true, customizationOptions: [{ id: 'special_instructions_comp', title: 'Instrucciones Especiales', type: 'textarea', placeholder: 'Ej: Bien cocidas...', obligatorio: false }] },
+    { id: `aderezo_extra_salsa_verde`, name: ADEREZOS_OPTIONS_BASE[0].label, price: 10.00, imageUrl: 'https://acidwaves.art/DSC04584.webp', category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[0].label}.`, customizable: false },
+    { id: `aderezo_extra_chipotle_dulce`, name: ADEREZOS_OPTIONS_BASE[1].label, price: 10.00, imageUrl: 'https://acidwaves.art/DSC04586.webp', category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[1].label}.`, customizable: false },
+    { id: `aderezo_extra_crema_ajo_pica`, name: ADEREZOS_OPTIONS_BASE[2].label, price: 10.00, imageUrl: 'https://acidwaves.art/DSC04582.webp', category: 'Extras', description: `Porción extra de aderezo ${ADEREZOS_OPTIONS_BASE[2].label}.`, customizable: false }
 ];
 
 const MOCK_COMPLEMENTARY_PRODUCTS = [
@@ -311,6 +311,7 @@ const CartPage = ({ cartItems, products, onUpdateQuantity, onRemoveItem, setCurr
         </div>
     </div> );
 };
+
 const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDeliveryMode }) => {
     const [orderType, setOrderType] = useState(initialDeliveryMode || 'delivery');
     const [streetAndNumber, setStreetAndNumber] = useState('');
@@ -319,37 +320,11 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
 
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('card');
-    const [showPaymentOptions, setShowPaymentOptions] = useState(true);
-    const [cardNumber, setCardNumber] = useState('');
-    const [cardExpiry, setCardExpiry] = useState('');
-    const [cardCvv, setCardCvv] = useState('');
-    const [savedCardLastFour, setSavedCardLastFour] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('card'); // Default to 'card'
 
     const pickupAddress = "Brutal Burritos, Calle 69E #224, Yucalpetén, Mérida, Yucatán";
     const deliveryFee = orderType === 'delivery' ? 40.00 : 0;
     const total = subtotal + deliveryFee;
-
-    const handleSaveCard = () => {
-        if (cardNumber.length >= 13 && cardExpiry.match(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/) && cardCvv.length >= 3) {
-            console.log("Simulating card save:", { cardNumber: cardNumber.slice(-4), cardExpiry, cardCvv });
-            setSavedCardLastFour(cardNumber.slice(-4));
-            setPaymentMethod('card_saved');
-            setShowPaymentOptions(false);
-        } else {
-            // Replaced alert() with a console.error for Vercel compatibility
-            console.error("Por favor, ingresa datos de tarjeta válidos.");
-        }
-    };
-
-    const handlePaymentOptionSelect = (method) => {
-        if (method === 'card') {
-            setPaymentMethod('card_form_active');
-        } else {
-            setPaymentMethod(method);
-        }
-        setShowPaymentOptions(false);
-    };
 
     const handleContinueToWhatsApp = () => {
         let orderSummary = "¡Hola Brutal Burritos! esta es mi orden:\n\n";
@@ -380,14 +355,12 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         orderSummary += "\n";
 
         let paymentMethodText = 'No especificado';
-        if (paymentMethod === 'card_saved') {
-            paymentMethodText = `Tarjeta ****${savedCardLastFour}`;
+        if (paymentMethod === 'card') {
+            paymentMethodText = 'Tarjeta (Enviar link de pago)';
         } else if (paymentMethod === 'cash') {
             paymentMethodText = 'Efectivo';
         } else if (paymentMethod === 'transfer') {
             paymentMethodText = 'Transferencia';
-        } else if (paymentMethod === 'card_form_active') {
-             paymentMethodText = 'Tarjeta (Pendiente de guardar)';
         }
 
         orderSummary += `*Método de Pago:* ${paymentMethodText}\n\n`;
@@ -397,7 +370,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         orderSummary += `*Total a Pagar:* ${formatPrice(total)}\n\n`;
         orderSummary += "¡Gracias!";
 
-        const whatsappNumber = "5219996057107";
+        const whatsappNumber = "529996057107"; // Corrected WhatsApp Number
         const encodedMessage = encodeURIComponent(orderSummary);
         const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
@@ -481,59 +454,30 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         )}
 
         <div className="bg-white p-4 rounded-lg shadow mb-6">
-            <div className="flex justify-between items-center mb-2">
-                <h3 className="font-semibold text-gray-700">Método de pago</h3>
-                {(paymentMethod === 'card_saved' || paymentMethod === 'cash' || paymentMethod === 'transfer') && !showPaymentOptions && (
-                    <button onClick={() => { setShowPaymentOptions(true); }} className="text-sm font-medium" style={{color: THEME_BRAND_RED}}>Cambiar</button>
-                )}
+            <h3 className="font-semibold text-gray-700 mb-3">Método de pago</h3>
+            <div className="space-y-2">
+                <button onClick={() => setPaymentMethod('card')}
+                        className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-all ${paymentMethod === 'card' ? 'ring-2' : 'border-gray-300'}`}
+                        style={paymentMethod === 'card' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
+                    <CreditCard size={20} className="mr-2 text-gray-700"/>
+                    <span className="text-sm text-gray-700">Tarjeta de Crédito/Débito</span>
+                </button>
+                <button onClick={() => setPaymentMethod('transfer')}
+                        className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-all ${paymentMethod === 'transfer' ? 'ring-2' : 'border-gray-300'}`}
+                        style={paymentMethod === 'transfer' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
+                    <Repeat size={20} className="mr-2 text-gray-700"/>
+                    <span className="text-sm text-gray-700">Transferencia</span>
+                </button>
+                <button onClick={() => setPaymentMethod('cash')}
+                        className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-all ${paymentMethod === 'cash' ? 'ring-2' : 'border-gray-300'}`}
+                        style={paymentMethod === 'cash' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
+                    <DollarSign size={20} className="mr-2 text-gray-700"/>
+                    <span className="text-sm text-gray-700">Efectivo</span>
+                </button>
             </div>
-
-            {showPaymentOptions ? (
-                <div className="mt-3 space-y-2">
-                    <button onClick={() => handlePaymentOptionSelect('card')}
-                                className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${paymentMethod === 'card_form_active' ? 'ring-2' : 'border-gray-300'}`}
-                                style={paymentMethod === 'card_form_active' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
-                        <CreditCard size={20} className="mr-2 text-gray-700"/>
-                        <span className="text-sm text-gray-700">Tarjeta de Crédito/Débito</span>
-                    </button>
-                    <button onClick={() => handlePaymentOptionSelect('transfer')}
-                                className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${paymentMethod === 'transfer' ? 'ring-2' : 'border-gray-300'}`}
-                                style={paymentMethod === 'transfer' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
-                        <Repeat size={20} className="mr-2 text-gray-700"/>
-                        <span className="text-sm text-gray-700">Transferencia</span>
-                    </button>
-                    <button onClick={() => handlePaymentOptionSelect('cash')}
-                                className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${paymentMethod === 'cash' ? 'ring-2' : 'border-gray-300'}`}
-                                style={paymentMethod === 'cash' ? {backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
-                        <DollarSign size={20} className="mr-2 text-gray-700"/>
-                        <span className="text-sm text-gray-700">Efectivo</span>
-                    </button>
-                </div>
-            ) : paymentMethod === 'card_saved' ? (
-                <div className="flex items-center">
-                    <CreditCard size={20} className="mr-2 text-gray-600"/>
-                    <p className="text-sm text-gray-600">Tarjeta Crédito/Débito ****{savedCardLastFour}</p>
-                </div>
-            ) : paymentMethod === 'cash' ? (
-                <div className="flex items-center">
-                    <DollarSign size={20} className="mr-2 text-gray-600" />
-                    <p className="text-sm text-gray-600">Efectivo</p>
-                </div>
-            ) : paymentMethod === 'transfer' ? (
-                <div className="flex items-center">
-                    <Repeat size={20} className="mr-2 text-gray-600" />
-                    <p className="text-sm text-gray-600">Transferencia</p>
-                </div>
-            ) : paymentMethod === 'card_form_active' ? (
-                    <div className="mt-4 space-y-3">
-                        <div> <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-600 mb-1">Número de Tarjeta</label> <input type="text" id="cardNumber" value={cardNumber} onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, '').substring(0,16))} placeholder="0000 0000 0000 0000" maxLength="16" className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div>
-                        <div className="flex space-x-3"> <div className="flex-1"> <label htmlFor="cardExpiry" className="block text-xs font-medium text-gray-600 mb-1">Vencimiento (MM/AA)</label> <input type="text" id="cardExpiry" value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value.replace(/\D/g, '').replace(/(\d{2})(\d{0,2})/, '$1/$2').substring(0,5))} placeholder="MM/AA" maxLength="5" className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div> <div className="flex-1"> <label htmlFor="cardCvv" className="block text-xs font-medium text-gray-600 mb-1">CVV</label> <input type="text" id="cardCvv" value={cardCvv} onChange={(e) => setCardCvv(e.target.value.replace(/\D/g, '').substring(0,4))} placeholder="123" maxLength="4" className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent" style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}/> </div> </div>
-                        <button onClick={handleSaveCard} className="w-full text-black py-2.5 px-4 rounded-lg transition-colors font-semibold text-sm shadow-md mt-3" style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}}> Guardar Tarjeta </button>
-                        <button onClick={() => {setShowPaymentOptions(true); setPaymentMethod('card');}} className="w-full text-sm text-gray-600 hover:text-red-600 mt-2">Cancelar</button>
-                    </div>
-            ) : null }
-             {paymentMethod === 'cash' && !showPaymentOptions && <p className="text-xs text-gray-500 mt-2">Pagarás en efectivo al momento de la entrega o recolección.</p>}
-             {paymentMethod === 'transfer' && !showPaymentOptions && <p className="text-xs text-gray-500 mt-2">Se proporcionarán los datos para la transferencia al confirmar.</p>}
+             {paymentMethod === 'card' && <p className="text-xs text-gray-500 mt-2 p-1">Se te enviará un link de pago por WhatsApp.</p>}
+             {paymentMethod === 'cash' && <p className="text-xs text-gray-500 mt-2 p-1">Pagarás en efectivo al momento de la entrega o recolección.</p>}
+             {paymentMethod === 'transfer' && <p className="text-xs text-gray-500 mt-2 p-1">Se proporcionarán los datos para la transferencia al confirmar.</p>}
         </div>
 
         <div className="bg-white p-4 rounded-lg shadow mb-6">
@@ -556,7 +500,6 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     <span style={{color: deliveryFee > 0 ? THEME_BRAND_RED : 'inherit'}}>{formatPrice(deliveryFee)}</span>
                 </div>
             </div>
-            {/* Removed "Así funcionan nuestros costos" text */}
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 shadow-top-strong max-w-4xl mx-auto">
@@ -569,7 +512,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     onClick={handleContinueToWhatsApp}
                     className="px-6 py-2 text-black rounded-full transition-colors font-semibold text-md shadow-md"
                     style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}}
-                    disabled={!paymentMethod || paymentMethod === 'card_form_active' || (orderType === 'delivery' && (!streetAndNumber || !neighborhood || !zipCode)) || !customerName || !customerPhone}
+                    disabled={!paymentMethod || (orderType === 'delivery' && (!streetAndNumber || !neighborhood || !zipCode)) || !customerName || !customerPhone}
                 >
                     Continuar
                 </button>
@@ -578,6 +521,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
     </div>
     );
 };
+
 
 const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQuantity, initialCustomizations, editingCartItemId }) => {
     const [quantity, setQuantity] = useState(initialQuantity || 1);
