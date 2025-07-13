@@ -6,7 +6,7 @@ import { ChevronLeft, ShoppingCart, Star, X, PlusCircle, MinusCircle, Trash2,Che
 // To mark an item as sold out, add its 'id' to this list.
 // The item will appear on the menu but will be grayed out and un-purchasable.
 // For example: const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_duo'];
-const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_familiar']; // Add product IDs here to mark them as sold out
+const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_familiar', 'combo_original']; // Add product IDs here to mark them as sold out
 
 // --- MANAGE SOLD OUT CUSTOMIZATION OPTIONS ---
 // Add the 'value' of customization options here to mark them as sold out.
