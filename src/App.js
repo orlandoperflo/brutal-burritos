@@ -2,21 +2,37 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 // Removed all Firebase imports
 import { ChevronLeft, ShoppingCart, Star, X, PlusCircle, MinusCircle, Trash2,ChevronDown, ChevronUp, Tag, Gift, MapPin, CreditCard, Clock, Home, List, ChevronRight, Settings2, Plus, MessageSquare, Edit3,Flame, User, Phone, Truck, Package, DollarSign, Repeat } from 'lucide-react';
 
+// --- MANAGE SOLD OUT ITEMS ---
+// To mark an item as sold out, add its 'id' to this list.
+// The item will appear on the menu but will be grayed out and un-purchasable.
+// For example: const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_duo'];
+const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_familiar']; // Add product IDs here to mark them as sold out
+
+// --- MANAGE SOLD OUT CUSTOMIZATION OPTIONS ---
+// Add the 'value' of customization options here to mark them as sold out.
+const SOLD_OUT_ADEREZOS_OPTIONS = []; // Example: 'Salsa Verde' is sold out
+const SOLD_OUT_CHILES_TATEMADOS_OPTIONS = [];
+const SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS = []; // Example: 'Extra Guacamole' is sold out
+const SOLD_OUT_PROTEIN_OPTIONS = ['arrachera_arma']; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
+
 // --- DATA CONSTANTS FIRST ---
 const ADEREZOS_OPTIONS_BASE = [
-    { label: 'Salsa Verde', value: 'salsa_verde' }, { label: 'Chipotle Dulce', value: 'chipotle_dulce' },
+    { label: 'Salsa Verde', value: 'salsa_verde' },
+    { label: 'Chipotle Dulce', value: 'chipotle_dulce' },
     { label: 'Crema de Ajo (pica)', value: 'crema_ajo_pica' },
-];
+].map(opt => ({...opt, isSoldOut: SOLD_OUT_ADEREZOS_OPTIONS.includes(opt.value)}));
+
 const CHILES_TATEMADOS_OPTIONS = [
-    { label: 'Serrano', value: 'chile_serrano' }, { label: 'Habanero', value: 'chile_habanero' },
-];
+    { label: 'Serrano', value: 'chile_serrano' },
+    { label: 'Habanero', value: 'chile_habanero' },
+].map(opt => ({...opt, isSoldOut: SOLD_OUT_CHILES_TATEMADOS_OPTIONS.includes(opt.value)}));
 
 const CUSTOMIZATION_EXTRAS_OPTIONS = [
     { label: 'Extra Queso Oaxaca', value: 'q_oaxaca_extra_add', priceChange: 20.00 },
     { label: 'Extra Queso Manchego', value: 'q_manchego_extra_add', priceChange: 20.00 },
     { label: 'Extra Guacamole (aguacate hass, cebolla, cilantro, jitomate)', value: 'guacamole_extra_add', priceChange: 30.00 },
     { label: 'Longaniza (porción)', value: 'longaniza_add', priceChange: 20.00 }
-];
+].map(opt => ({...opt, isSoldOut: SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS.includes(opt.value)}));
 
 const COMBINED_EXTRAS_FOR_CASA_BURRITOS = {
     id: 'extras_casa', title: 'Extras (con costo adicional)', type: 'checkbox', obligatorio: false,
@@ -38,18 +54,6 @@ const THEME_LIME_GREEN_DARKER = '#8ACC1E';
 // appId is now just a constant, no longer related to Firebase paths
 const appId = 'brutal-burritos-app';
 
-// New image URL for all burritos
-const BURRITO_IMAGE_URL = 'https://raw.githubusercontent.com/orlandoperflo/brutal-burritos/refs/heads/main/grilled-beef-tortilla-with-fresh-guacamole-generated-by-ai.png';
-// New image URLs for other categories
-const COMBOS_IMAGE_URL = 'https://raw.githubusercontent.com/orlandoperflo/brutal-burritos/refs/heads/main/freepik__only-2-stacked-burritos-with-shredded-meat-lettuce__64261.jpeg';
-const FRENCH_FRIES_IMAGE_URL = 'https://www.cookwithnabeela.com/wp-content/uploads/2024/02/FrenchFries-480x270.webp';
-const VEGETABLES_IMAGE_URL = 'https://i.blogs.es/0dbf5a/copia-de-portada---2025-01-23t164049.985/1366_2000.jpg';
-const DRINKS_IMAGE_URL = 'https://kokomexico.com/wp-content/uploads/2022/05/Aguas-Frescas1-770x441.jpg';
-const SALSA_VERDE_IMAGE_URL = 'https://www.mexicoenmicocina.com/wp-content/uploads/2016/08/salsa-verde-copy.jpg';
-const CHIPOTLE_DULCE_IMAGE_URL = 'https://img.sunset02.com/sites/default/files/image/recipes/su/04/10/chipotle-salsa-mr-x.jpg';
-const CREMA_DE_AJO_IMAGE_URL = 'https://mojo.generalmills.com/api/public/content/WuaPo5TgaU2KiF4Rh7r9eQ_gmi_hi_res_jpeg.jpeg?v=f77d0b29&t=16e3ce250f244648bef28c5949fb99ff';
-const SALAD_IMAGE_URL = 'https://saladonaroll.com/wp-content/uploads/2023/02/lettuce-cucumber-tomato-salad.jpg';
-
 
 const MOCK_PRODUCTS = [
     { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: 'https://acidwaves.art/DSC04525-2.webp', category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
@@ -57,14 +61,14 @@ const MOCK_PRODUCTS = [
     { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: 'https://acidwaves.art/DSC04529light.webp', category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
     { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: 'https://acidwaves.art/DSC04598 (1).webp', category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
         customizationOptions: [
-            { id: 'proteina_kid', title: 'Elige Proteína (Kid)', type: 'radio', obligatorio: false, options: [{ label: 'Pollo', value: 'pollo_kid' }, { label: 'Res', value: 'res_kid' }] },
+            { id: 'proteina_kid', title: 'Elige Proteína (Kid)', type: 'radio', obligatorio: false, options: [{ label: 'Pollo', value: 'pollo_kid' }, { label: 'Res', value: 'res_kid' }].map(opt => ({...opt, isSoldOut: SOLD_OUT_PROTEIN_OPTIONS.includes(opt.value)})) },
             { id: 'aderezo_kid', title: 'Elige Aderezo (Kid)', type: 'radio', obligatorio: false, options: [{label: 'Ninguno', value: 'ninguno_kid'}, ...ADEREZOS_OPTIONS_BASE.slice(0,2)] },
             { id: 'special_instructions_kid', title: 'Instrucciones Especiales (Kid)', type: 'textarea', placeholder: 'Ej: Sin picante...', obligatorio: false }
         ]
     },
     { id: 'arma_tu_burrito', name: 'Arma tu Burrito', price: 0, imageUrl: 'https://acidwaves.art/DSC04572light.webp', category: 'Arma tu Burrito', description: '¡Escoge lo que se te antoje! Crea tu combinación perfecta.', customizable: true,
         customizationOptions: [
-            { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ] },
+            { id: 'proteina_arma', title: '1. Elige tu Proteína', type: 'radio', obligatorio: false, options: [ { label: 'Pollo', value: 'pollo_arma', priceSet: 150.00 }, { label: 'Res', value: 'res_arma', priceSet: 160.00 }, { label: 'Arrachera', value: 'arrachera_arma', priceSet: 170.00 } ].map(opt => ({...opt, isSoldOut: SOLD_OUT_PROTEIN_OPTIONS.includes(opt.value)})) },
             { id: 'arroz_arma', title: '2. Arroz', type: 'radio', obligatorio: false, options: [{ label: 'Arroz Blanco', value: 'arroz_blanco' }, {label: 'Sin Arroz', value: 'sin_arroz'}] , isDefault: 'arroz_blanco'},
             { id: 'frijoles_arma', title: '3. Frijoles', type: 'radio', obligatorio: false, options: [{ label: 'Frijoles Refritos', value: 'frijoles_refritos' }, {label: 'Sin Frijoles', value: 'sin_frijoles'}], isDefault: 'frijoles_refritos'},
             { id: 'queso_arma', title: '4. Elige tu Queso (incluido)', type: 'radio', obligatorio: false, options: [{ label: 'Queso Oaxaca', value: 'queso_oaxaca_arma'}, { label: 'Queso Manchego', value: 'queso_manchego_arma' }, {label: 'Sin Queso', value: 'sin_queso_arma'}]},
@@ -93,8 +97,10 @@ const MOCK_PRODUCTS = [
 ];
 
 const MOCK_COMPLEMENTARY_PRODUCTS = [
-    MOCK_PRODUCTS.find(p => p.id === 'comp_papas'), MOCK_PRODUCTS.find(p => p.id === 'comp_ensalada'),
-    MOCK_PRODUCTS.find(p => p.id === 'comp_verduras'), MOCK_PRODUCTS.find(p => p.id === 'bebida_agua_1l'),
+    MOCK_PRODUCTS.find(p => p.id === 'comp_papas'),
+    MOCK_PRODUCTS.find(p => p.id === 'comp_ensalada'),
+    MOCK_PRODUCTS.find(p => p.id === 'comp_verduras'),
+    MOCK_PRODUCTS.find(p => p.id === 'bebida_agua_1l'),
     MOCK_PRODUCTS.find(p => p.id === 'bebida_agua_500ml'),
 ].filter(Boolean);
 
@@ -132,9 +138,59 @@ const Header = ({ currentPage, setCurrentPage, cartItemCount, isCustomizationPan
 };
 
 const ProductCard = ({ product, onAddToCart, onCustomize }) => {
+    const isSoldOut = SOLD_OUT_ITEMS.includes(product.id);
     const discount = product.originalPrice && product.price < product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0;
-    const handleActionClick = (e) => { e.stopPropagation(); onCustomize(product); };
-    return ( <div className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-200 relative flex flex-col justify-between"> <div className="relative"> <img src={product.imageUrl} alt={product.name} className="w-full h-40 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/300x200/757575/FFFFFF?text=Sin+Imagen`; }}/> {discount > 0 && ( <div className="absolute top-2 left-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded"> {discount}% OFF </div> )} <button onClick={handleActionClick} aria-label={`Personalizar ${product.name}`} className="absolute top-2 right-2 text-black rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity-75 transition-transform hover:scale-110" style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER }}> <Plus size={20} strokeWidth={3} /> </button> </div> <div className="p-4 flex-grow"> <h3 className="text-md font-semibold text-gray-800 mb-1 truncate">{product.name}</h3> <p className="text-xs text-gray-600 mb-2">{product.description}</p> </div> <div className="p-4 pt-0"> <div className="flex items-baseline"> <span className="text-xl font-bold text-gray-800">{product.price > 0 ? formatPrice(product.price) : (product.id === 'arma_tu_burrito' ? `Desde ${formatPrice(150)}` : "Precio Varía")}</span> {product.originalPrice && (<span className="text-sm text-gray-500 line-through ml-2">{formatPrice(product.originalPrice)}</span>)} </div> </div> </div> );
+    
+    const handleActionClick = (e) => {
+        if (isSoldOut) {
+            e.stopPropagation();
+            return;
+        }
+        e.stopPropagation();
+        onCustomize(product);
+    };
+
+    return (
+        <div className={`bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-200 relative flex flex-col justify-between ${isSoldOut ? 'cursor-not-allowed' : 'transform hover:scale-105'}`}>
+            <div className="relative">
+                <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    className="w-full h-40 object-cover"
+                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/300x200/757575/FFFFFF?text=Sin+Imagen`; }}
+                />
+                {discount > 0 && !isSoldOut && (
+                    <div className="absolute top-2 left-2 bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded">
+                        {discount}% OFF
+                    </div>
+                )}
+                <button 
+                    onClick={handleActionClick} 
+                    aria-label={`Personalizar ${product.name}`} 
+                    className={`absolute top-2 right-2 text-black rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity-75 transition-transform ${isSoldOut ? 'cursor-not-allowed bg-gray-400' : 'hover:scale-110'}`}
+                    style={!isSoldOut ? {backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER } : {}}
+                    disabled={isSoldOut}
+                >
+                    <Plus size={20} strokeWidth={3} />
+                </button>
+            </div>
+            <div className="p-4 flex-grow">
+                <h3 className="text-md font-semibold text-gray-800 mb-1 truncate flex items-center">
+                    {product.name}
+                    {isSoldOut && (
+                        <span className="ml-2 text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded-full">AGOTADO</span>
+                    )}
+                </h3>
+                <p className="text-xs text-gray-600 mb-2">{product.description}</p>
+            </div>
+            <div className="p-4 pt-0">
+                <div className="flex items-baseline">
+                    <span className="text-xl font-bold text-gray-800">{product.price > 0 ? formatPrice(product.price) : (product.id === 'arma_tu_burrito' ? `Desde ${formatPrice(150)}` : "Precio Varía")}</span>
+                    {product.originalPrice && (<span className="text-sm text-gray-500 line-through ml-2">{formatPrice(product.originalPrice)}</span>)}
+                </div>
+            </div>
+        </div>
+    );
 };
 
 const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, deliveryMode, setDeliveryMode }) => {
@@ -291,9 +347,43 @@ const CartItemCard = ({ item, productDetail, onUpdateQuantity, onRemoveItem, onE
         {customizationsOpen && customizationEntries.length > 0 && ( <div className="mt-2 pt-2 border-t border-gray-100"> <p className="text-xs font-semibold text-gray-600 mb-1">Personalizaciones:</p> {customizationEntries.map(([key, value]) => (<p key={key} className="text-xs text-gray-500 ml-2">- {key}: {value}</p>))} </div> )}
     </div> );
 };
+
 const ComplementaryProductCard = ({ product, onAddToCart }) => {
-    return ( <div className="bg-white rounded-lg shadow-md overflow-hidden w-36 flex-shrink-0 mr-3 relative"> <img src={product.imageUrl} alt={product.name} className="w-full h-24 object-cover" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/150x150/757575/FFFFFF?text=N/A`; }}/> <div className="p-2"> <h4 className="text-xs font-semibold text-gray-700 truncate">{product.name}</h4> {product.size && <p className="text-xs text-gray-500">{product.size}</p>} <p className="text-sm font-bold text-gray-800 mt-1">{formatPrice(product.price)}</p> </div> <button onClick={() => onAddToCart(product, 1, {}, true)} className="absolute top-1 right-1 text-black rounded-full p-1.5 shadow-md transition-colors" style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}} aria-label={`Agregar ${product.name}`}> <Plus size={16} strokeWidth={3}/> </button> </div> );
+    const isSoldOut = SOLD_OUT_ITEMS.includes(product.id);
+
+    return (
+        <div className={`bg-white rounded-lg shadow-md overflow-hidden w-36 flex-shrink-0 mr-3 relative ${isSoldOut ? 'cursor-not-allowed' : ''}`}>
+            <div className="relative">
+                 <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    className="w-full h-24 object-cover"
+                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/150x150/757575/FFFFFF?text=N/A`; }}
+                />
+                {isSoldOut && (
+                    <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                        <span className="text-white text-sm font-bold bg-red-600 px-2 py-1 rounded-md transform -rotate-12">AGOTADO</span>
+                    </div>
+                )}
+                 <button 
+                    onClick={() => !isSoldOut && onAddToCart(product, 1, {}, true)} 
+                    className={`absolute top-1 right-1 text-black rounded-full p-1.5 shadow-md transition-colors ${isSoldOut ? 'bg-gray-400 cursor-not-allowed' : ''}`}
+                    style={!isSoldOut ? {backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER} : {}} 
+                    aria-label={`Agregar ${product.name}`}
+                    disabled={isSoldOut}
+                >
+                    <Plus size={16} strokeWidth={3}/>
+                </button>
+            </div>
+            <div className="p-2">
+                <h4 className="text-xs font-semibold text-gray-700 truncate">{product.name}</h4>
+                {product.size && <p className="text-xs text-gray-500">{product.size}</p>}
+                <p className="text-sm font-bold text-gray-800 mt-1">{formatPrice(product.price)}</p>
+            </div>
+        </div>
+    );
 };
+
 
 const CartPage = ({ cartItems, products, onUpdateQuantity, onRemoveItem, setCurrentPage, onClearCart, onAddToCart, onEditItem }) => {
     const getProductDetails = (productId) => products.find(p => p.id === productId); const subtotal = cartItems.reduce((sum, item) => { const product = getProductDetails(item.productId); return sum + ((item.price || (product ? product.price : 0)) * item.quantity); }, 0);
@@ -566,9 +656,9 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                         initialSelections[proteinGroup.id] = matchedProteinOption.value;
                         price = matchedProteinOption.priceSet || 0;
                     } else {
-                        const defaultProtein = proteinGroup.options.find(opt => opt.isDefault) || proteinGroup.options[0];
-                        initialSelections[proteinGroup.id] = defaultProtein.value;
-                        price = defaultProtein.priceSet || 0;
+                        const defaultProtein = proteinGroup.options.find(opt => opt.isDefault && !opt.isSoldOut) || proteinGroup.options.find(opt => !opt.isSoldOut); // Select first non-sold-out option if default is sold out
+                        initialSelections[proteinGroup.id] = defaultProtein?.value || '';
+                        price = defaultProtein?.priceSet || 0;
                     }
                 }
             }
@@ -578,19 +668,19 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                 const savedGroupTitleCustomization = initialCustomizations[group.title];
 
                 if (group.type === 'radio') {
-                    const selectedOpt = group.options.find(opt => opt.label === savedGroupTitleCustomization);
+                    const selectedOpt = group.options.find(opt => opt.label === savedGroupTitleCustomization && !opt.isSoldOut);
                     if (selectedOpt) {
                         initialSelections[group.id] = selectedOpt.value;
                         if (selectedOpt.priceChange && group.id !== 'queso_arma') price += selectedOpt.priceChange;
                     } else if (group.options.length > 0) {
-                        const defaultOption = group.options.find(opt => opt.isDefault) || group.options[0];
-                        initialSelections[group.id] = defaultOption.value;
-                        if (defaultOption.priceChange && group.id !== 'proteina_arma' && group.id !== 'queso_arma') price += defaultOption.priceChange;
+                        const defaultOption = group.options.find(opt => opt.isDefault && !opt.isSoldOut) || group.options.find(opt => !opt.isSoldOut);
+                        initialSelections[group.id] = defaultOption?.value || '';
+                        if (defaultOption?.priceChange && group.id !== 'proteina_arma' && group.id !== 'queso_arma') price += defaultOption.priceChange;
                     }
                 } else if (group.type === 'checkbox') {
                     initialSelections[group.id] = {};
                     group.options.forEach(opt => {
-                        if (initialCustomizations[opt.label] === 'Sí') {
+                        if (initialCustomizations[opt.label] === 'Sí' && !opt.isSoldOut) {
                             initialSelections[group.id][opt.value] = true;
                             if (opt.priceChange) price += opt.priceChange;
                         }
@@ -603,31 +693,147 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
             if (product.id === 'arma_tu_burrito' && product.customizationOptions) {
                 const proteinGroup = product.customizationOptions.find(g => g.id === 'proteina_arma');
                 if (proteinGroup && proteinGroup.options.length > 0) {
-                    const defaultProtein = proteinGroup.options.find(opt => opt.isDefault) || proteinGroup.options[0];
-                    initialSelections[proteinGroup.id] = defaultProtein.value;
-                    price = defaultProtein.priceSet || 0;
+                    const defaultProtein = proteinGroup.options.find(opt => opt.isDefault && !opt.isSoldOut) || proteinGroup.options.find(opt => !opt.isSoldOut);
+                    initialSelections[proteinGroup.id] = defaultProtein?.value || '';
+                    price = defaultProtein?.priceSet || 0;
                 }
             }
             product.customizationOptions?.forEach(group => {
                 if (group.id === 'proteina_arma' && initialSelections[group.id]) return;
                 if (group.type === 'radio' && group.options.length > 0) {
-                    const defaultOption = group.options.find(opt => opt.isDefault) || group.options[0];
-                    initialSelections[group.id] = defaultOption.value;
-                    if (defaultOption.priceChange && group.id !== 'queso_arma') price += defaultOption.priceChange;
+                    const defaultOption = group.options.find(opt => opt.isDefault && !opt.isSoldOut) || group.options.find(opt => !opt.isSoldOut);
+                    initialSelections[group.id] = defaultOption?.value || '';
+                    if (defaultOption?.priceChange && group.id !== 'queso_arma') price += defaultOption.priceChange;
                 } else if (group.type === 'checkbox') {
                     initialSelections[group.id] = {};
-                    group.options.forEach(opt => { if (opt.isDefault) { initialSelections[group.id][opt.value] = true; if (opt.priceChange) price += opt.priceChange; } });
+                    group.options.forEach(opt => { if (opt.isDefault && !opt.isSoldOut) { initialSelections[group.id][opt.value] = true; if (opt.priceChange) price += opt.priceChange; } });
                 } else if (group.type === 'textarea') { initialSelections[group.id] = ''; }
             });
         }
-        setSelectedCustomizations(initialSelections);
         setCurrentPrice(price);
+        setSelectedCustomizations(initialSelections);
     }, [product, initialCustomizations, editingCartItemId]);
 
 
-    const handleOptionChange = (groupId, optionValue, groupType) => { setSelectedCustomizations(prev => { const newSelections = { ...prev }; if (groupType === 'checkbox') { const currentGroupSelections = newSelections[groupId] || {}; const currentGroupOptions = product.customizationOptions.find(g => g.id === groupId)?.options || []; const groupMaxChoices = product.customizationOptions.find(g => g.id === groupId)?.maxChoices; const currentSelectedCount = Object.values(currentGroupSelections).filter(Boolean).length; if (!currentGroupSelections[optionValue] && groupMaxChoices && currentSelectedCount >= groupMaxChoices) { console.log(`Max ${groupMaxChoices} choices allowed for ${groupId}`); return prev; } newSelections[groupId] = { ...currentGroupSelections, [optionValue]: !currentGroupSelections[optionValue] }; } else if (groupType === 'textarea') { newSelections[groupId] = optionValue; } else { newSelections[groupId] = optionValue; } let newPrice = product.price; if (product.id === 'arma_tu_burrito' && newSelections['proteina_arma']) { const proteinGroup = product.customizationOptions.find(g => g.id === 'proteina_arma'); const selectedProteinOpt = proteinGroup.options.find(opt => opt.value === newSelections['proteina_arma']); if (selectedProteinOpt && typeof selectedProteinOpt.priceSet === 'number') { newPrice = selectedProteinOpt.priceSet; } } product.customizationOptions?.forEach(group => { const selectionInGroup = newSelections[group.id]; if (selectionInGroup) { if (group.type === 'radio') { const opt = group.options.find(o => o.value === selectionInGroup); if (opt && opt.priceChange && group.id !== 'proteina_arma' && group.id !== 'queso_arma' ) newPrice += opt.priceChange; } else if (group.type === 'checkbox') { Object.keys(selectionInGroup).forEach(valKey => { if (selectionInGroup[valKey]) { const opt = group.options.find(o => o.value === valKey); if (opt && opt.priceChange) newPrice += opt.priceChange; } }); } } }); setCurrentPrice(newPrice); return newSelections; }); };
-    const handleSaveCustomizations = () => { const finalCustomizationsForCart = {}; product.customizationOptions?.forEach(group => { const selectedValue = selectedCustomizations[group.id]; if (selectedValue) { if (group.type === 'radio') { const selectedOption = group.options.find(opt => opt.value === selectedValue); if (selectedOption) finalCustomizationsForCart[group.title] = selectedOption.label; } else if (group.type === 'checkbox') { Object.entries(selectedValue).forEach(([optionVal, isSelected]) => { if (isSelected) { const selectedOption = group.options.find(opt => opt.value === optionVal); if (selectedOption) finalCustomizationsForCart[selectedOption.label] = 'Sí'; } }); } else if (group.type === 'textarea' && selectedValue.trim() !== '') { finalCustomizationsForCart[group.title] = selectedValue.trim(); } } }); const itemToAdd = { ...product, price: currentPrice }; onAddToCart(itemToAdd, quantity, finalCustomizationsForCart); onClose(); };
-    const renderCustomizationOptions = () => { if (!product.customizationOptions || product.customizationOptions.length === 0) { return <p className="text-gray-500 p-4 text-center">Este producto no tiene opciones de personalización adicionales.</p>; } return product.customizationOptions.map(group => ( <CustomizationSection key={group.id} title={group.title} hint={group.hint} maxChoices={group.maxChoices} currentSelectionCount={group.type === 'checkbox' ? Object.values(selectedCustomizations[group.id] || {}).filter(Boolean).length : undefined} obligatorio={group.obligatorio}> {group.type === 'textarea' ? ( <TextareaOption placeholder={group.placeholder} value={selectedCustomizations[group.id] || ''} onChange={(text) => handleOptionChange(group.id, text, group.type)} /> ) : ( group.options.map(option => { if (group.type === 'radio') { return ( <RadioOption key={option.value} name={group.id} value={option.value} label={option.label + (option.priceChange ? ` (+${formatPrice(option.priceChange)})` : (option.priceSet ? ` (${formatPrice(option.priceSet)})` : ''))} checked={selectedCustomizations[group.id] === option.value} onChange={(val) => handleOptionChange(group.id, val, group.type)} /> ); } else if (group.type === 'checkbox') { const currentGroupSelections = selectedCustomizations[group.id] || {}; const isDisabled = group.maxChoices && Object.values(currentGroupSelections).filter(Boolean).length >= group.maxChoices && !currentGroupSelections[option.value]; return ( <CheckboxOption key={option.value} label={option.label + (option.priceChange ? ` (+${formatPrice(option.priceChange)})` : '')} checked={!!currentGroupSelections[option.value]} onChange={() => handleOptionChange(group.id, option.value, group.type)} disabled={isDisabled} /> ); } return null; }) )} </CustomizationSection> )); };
+    const handleOptionChange = (groupId, optionValue, groupType, isOptionSoldOut) => {
+        if (isOptionSoldOut) return; // Prevent selecting sold out options
+
+        setSelectedCustomizations(prev => {
+            const newSelections = { ...prev };
+            if (groupType === 'checkbox') {
+                const currentGroupSelections = newSelections[groupId] || {};
+                const groupMaxChoices = product.customizationOptions.find(g => g.id === groupId)?.maxChoices;
+                const currentSelectedCount = Object.values(currentGroupSelections).filter(Boolean).length;
+
+                if (!currentGroupSelections[optionValue] && groupMaxChoices && currentSelectedCount >= groupMaxChoices) {
+                    console.log(`Max ${groupMaxChoices} choices allowed for ${groupId}`);
+                    return prev;
+                }
+                newSelections[groupId] = { ...currentGroupSelections, [optionValue]: !currentGroupSelections[optionValue] };
+            } else if (groupType === 'textarea') {
+                newSelections[groupId] = optionValue;
+            } else {
+                newSelections[groupId] = optionValue;
+            }
+
+            let newPrice = product.price;
+            // Recalculate price based on all selected customizations
+            if (product.id === 'arma_tu_burrito' && newSelections['proteina_arma']) {
+                const proteinGroup = product.customizationOptions.find(g => g.id === 'proteina_arma');
+                const selectedProteinOpt = proteinGroup.options.find(opt => opt.value === newSelections['proteina_arma'] && !opt.isSoldOut);
+                if (selectedProteinOpt && typeof selectedProteinOpt.priceSet === 'number') {
+                    newPrice = selectedProteinOpt.priceSet;
+                }
+            }
+
+            product.customizationOptions?.forEach(group => {
+                const selectionInGroup = newSelections[group.id];
+                if (selectionInGroup) {
+                    if (group.type === 'radio') {
+                        const opt = group.options.find(o => o.value === selectionInGroup && !o.isSoldOut);
+                        if (opt && opt.priceChange && group.id !== 'proteina_arma' && group.id !== 'queso_arma') newPrice += opt.priceChange;
+                    } else if (group.type === 'checkbox') {
+                        Object.keys(selectionInGroup).forEach(valKey => {
+                            if (selectionInGroup[valKey]) {
+                                const opt = group.options.find(o => o.value === valKey && !o.isSoldOut);
+                                if (opt && opt.priceChange) newPrice += opt.priceChange;
+                            }
+                        });
+                    }
+                }
+            });
+            setCurrentPrice(newPrice);
+            return newSelections;
+        });
+    };
+
+    const handleSaveCustomizations = () => {
+        const finalCustomizationsForCart = {};
+        product.customizationOptions?.forEach(group => {
+            const selectedValue = selectedCustomizations[group.id];
+            if (selectedValue) {
+                if (group.type === 'radio') {
+                    const selectedOption = group.options.find(opt => opt.value === selectedValue && !opt.isSoldOut);
+                    if (selectedOption) finalCustomizationsForCart[group.title] = selectedOption.label;
+                } else if (group.type === 'checkbox') {
+                    Object.entries(selectedValue).forEach(([optionVal, isSelected]) => {
+                        if (isSelected) {
+                            const selectedOption = group.options.find(opt => opt.value === optionVal && !opt.isSoldOut);
+                            if (selectedOption) finalCustomizationsForCart[selectedOption.label] = 'Sí';
+                        }
+                    });
+                } else if (group.type === 'textarea' && selectedValue.trim() !== '') {
+                    finalCustomizationsForCart[group.title] = selectedValue.trim();
+                }
+            }
+        });
+        const itemToAdd = { ...product, price: currentPrice };
+        onAddToCart(itemToAdd, quantity, finalCustomizationsForCart);
+        onClose();
+    };
+
+    const renderCustomizationOptions = () => {
+        if (!product.customizationOptions || product.customizationOptions.length === 0) {
+            return <p className="text-gray-500 p-4 text-center">Este producto no tiene opciones de personalización adicionales.</p>;
+        }
+        return product.customizationOptions.map(group => (
+            <CustomizationSection key={group.id} title={group.title} hint={group.hint} maxChoices={group.maxChoices} currentSelectionCount={group.type === 'checkbox' ? Object.values(selectedCustomizations[group.id] || {}).filter(Boolean).length : undefined} obligatorio={group.obligatorio}>
+                {group.type === 'textarea' ? (
+                    <TextareaOption placeholder={group.placeholder} value={selectedCustomizations[group.id] || ''} onChange={(text) => handleOptionChange(group.id, text, group.type)} />
+                ) : (
+                    group.options.map(option => {
+                        if (group.type === 'radio') {
+                            return (
+                                <RadioOption
+                                    key={option.value}
+                                    name={group.id}
+                                    value={option.value}
+                                    label={option.label + (option.priceChange ? ` (+${formatPrice(option.priceChange)})` : (option.priceSet ? ` (${formatPrice(option.priceSet)})` : ''))}
+                                    checked={selectedCustomizations[group.id] === option.value}
+                                    onChange={(val) => handleOptionChange(group.id, val, group.type, option.isSoldOut)}
+                                    isSoldOut={option.isSoldOut}
+                                />
+                            );
+                        } else if (group.type === 'checkbox') {
+                            const currentGroupSelections = selectedCustomizations[group.id] || {};
+                            const isDisabled = group.maxChoices && Object.values(currentGroupSelections).filter(Boolean).length >= group.maxChoices && !currentGroupSelections[option.value] || option.isSoldOut;
+                            return (
+                                <CheckboxOption
+                                    key={option.value}
+                                    label={option.label + (option.priceChange ? ` (+${formatPrice(option.priceChange)})` : '')}
+                                    checked={!!currentGroupSelections[option.value]}
+                                    onChange={() => handleOptionChange(group.id, option.value, group.type, option.isSoldOut)}
+                                    disabled={isDisabled}
+                                    isSoldOut={option.isSoldOut}
+                                />
+                            );
+                        }
+                        return null;
+                    })
+                )}
+            </CustomizationSection>
+        ));
+    };
     return ( <div className="h-full flex flex-col bg-white"> <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10"> <button onClick={onClose} className="text-gray-600 hover:text-gray-800"> <X size={24} /> </button> <h2 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h2> <div className="w-6"></div> </div> <div className="flex-grow overflow-y-auto p-4 pb-28 bg-gray-50"> <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-lg mb-4 shadow-md" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x300/757575/FFFFFF?text=Sin+Imagen`; }}/> <p className="text-gray-700 mb-1 text-sm">{product.description}</p> <p className="text-2xl font-bold mb-6 text-gray-800">{formatPrice(currentPrice)}</p> {renderCustomizationOptions()} </div>
         <div className="bg-white p-3 border-t shadow-top flex items-center justify-between space-x-3 sticky bottom-0 z-10">
             <div className="flex items-center">
@@ -655,16 +861,22 @@ const CustomizationSection = ({ title, hint, obligatorio, children, maxChoices, 
     if (maxChoices) { displayHint = `${hint ? hint + ' - ' : ''}Puedes elegir hasta ${maxChoices}. (${currentSelectionCount || 0}/${maxChoices} seleccionados)`; }
     return ( <div className="mb-4 bg-white p-4 rounded-lg shadow"> <button onClick={() => setIsOpen(!isOpen)} className="flex justify-between items-center w-full mb-2 text-left"> <div><h3 className="font-semibold text-gray-700">{title}</h3>{displayHint && <p className="text-xs text-gray-500">{displayHint}</p>}</div> <div className="flex items-center"> {!isOpen && !obligatorio && <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full mr-2" style={{backgroundColor: `${THEME_LIME_GREEN}44`, color: THEME_LIME_GREEN_DARKER}}>Listo</span>} {isOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />} </div> </button> {isOpen && <div className="space-y-2 pt-2 border-t border-gray-100">{children}</div>} </div> );
 };
-const RadioOption = ({ name, value, label, checked, onChange }) => (
-    <label className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-md cursor-pointer w-full">
-        <span className="text-sm text-gray-700 mr-3">{label}</span>
-        <input type="radio" name={name} value={value} checked={checked} onChange={() => onChange(value)} className="form-radio h-5 w-5" style={{accentColor: THEME_LIME_GREEN}}/>
+const RadioOption = ({ name, value, label, checked, onChange, isSoldOut }) => (
+    <label className={`flex items-center justify-between p-2 rounded-md w-full ${isSoldOut ? 'opacity-50 cursor-not-allowed bg-gray-100' : 'hover:bg-gray-50 cursor-pointer'}`}>
+        <span className="text-sm text-gray-700 mr-3">
+            {label}
+            {isSoldOut && <span className="ml-2 text-xs font-bold text-red-600">AGOTADO</span>}
+        </span>
+        <input type="radio" name={name} value={value} checked={checked} onChange={() => onChange(value)} className="form-radio h-5 w-5" style={{accentColor: THEME_LIME_GREEN}} disabled={isSoldOut}/>
     </label>
 );
-const CheckboxOption = ({ label, checked, onChange, disabled }) => (
-     <label className={`flex items-center justify-between p-2 hover:bg-gray-50 rounded-md w-full ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
-        <span className="text-sm text-gray-700 mr-3">{label}</span>
-        <input type="checkbox" checked={checked} onChange={onChange} className="form-checkbox h-5 w-5 rounded" style={{accentColor: THEME_LIME_GREEN}} disabled={disabled}/>
+const CheckboxOption = ({ label, checked, onChange, disabled, isSoldOut }) => (
+     <label className={`flex items-center justify-between p-2 rounded-md w-full ${disabled || isSoldOut ? 'opacity-50 cursor-not-allowed bg-gray-100' : 'hover:bg-gray-50 cursor-pointer'}`}>
+        <span className="text-sm text-gray-700 mr-3">
+            {label}
+            {isSoldOut && <span className="ml-2 text-xs font-bold text-red-600">AGOTADO</span>}
+        </span>
+        <input type="checkbox" checked={checked} onChange={onChange} className="form-checkbox h-5 w-5 rounded" style={{accentColor: THEME_LIME_GREEN}} disabled={disabled || isSoldOut}/>
     </label>
 );
 const TextareaOption = ({ placeholder, value, onChange }) => (
@@ -689,30 +901,9 @@ function App() {
         setIsAuthReady(true); // Auth is "ready" immediately as no external auth is needed
     }, []);
 
-    // Removed setupProductsInFirestore useEffect (no Firestore)
-    // useEffect(() => {
-    //       if (isAuthReady && process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).apiKey && db) {
-    //           setupProductsInFirestore();
-    //       }
-    // }, [isAuthReady]);
-
-    // Products are now always from MOCK_PRODUCTS, no fetching needed
     useEffect(() => {
-        // No external fetching, products are always MOCK_PRODUCTS
-        // This useEffect can be removed or simplified if no dynamic product loading is desired
-        // For now, we'll keep it to set products initially, though it's redundant with useState(MOCK_PRODUCTS)
-        if (products.length === 0) { // Only set if products are somehow empty (shouldn't happen with MOCK_PRODUCTS)
-            setProducts(MOCK_PRODUCTS);
-        }
-    }, [products]); // Depend on products to avoid infinite loop if setProducts is called
-
-    // Cart items are now managed entirely in local state, no Firestore listener
-    // useEffect(() => {
-    //       if (!userId || !isAuthReady || !(process.env.REACT_APP_FIREBASE_CONFIG && JSON.parse(process.env.REACT_APP_FIREBASE_CONFIG).apiKey && db)) { return; }
-    //       const cartRef = collection(db, `/artifacts/${appId}/users/${userId}/cartItems`);
-    //       const unsubscribeCart = onSnapshot(cartRef, (snapshot) => { setCartItems(snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))); }, (error) => { console.error("Error fetching cart: ", error); });
-    //       return () => unsubscribeCart();
-    // }, [userId, isAuthReady, appId]);
+        setProducts(MOCK_PRODUCTS);
+    }, []); 
 
     const handleOpenCustomizationPanel = (product, cartItemToEdit = null) => {
         setProductToCustomize(product);
