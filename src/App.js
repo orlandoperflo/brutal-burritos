@@ -150,7 +150,7 @@ const MOCK_COMPLEMENTARY_PRODUCTS = [
     MOCK_PRODUCTS.find(p => p.id === 'bebida_agua_500ml'),
 ].filter(Boolean);
 
-const DISPLAY_CATEGORIES = ['Populares', 'Burritos de la Casa', 'Arma tu Burrito', 'Combos', 'Bebidas', 'Complementos', 'Extras', 'Promociones'];
+const DISPLAY_CATEGORIES = ['Populares', 'Burritos de la Casa', 'Arma tu Burrito', 'Combos', 'Bebidas', 'Complementos', 'Extras'];
 const POPULARES_SECTION_ORDER = ['Burritos de la Casa', 'Combos', 'Arma tu Burrito', 'Complementos', 'Extras', 'Bebidas']; // Removed 'Promociones' from here
 
 
