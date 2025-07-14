@@ -17,7 +17,7 @@ const SOLD_OUT_PROTEIN_OPTIONS = []; // Example: 'Res' protein is sold out for K
 
 // --- PROMOTIONAL PRODUCTS VISIBILITY ---
 // Set to true to make the 2x Alambre promo visible on the home page.
-const IS_ALAMBRE_PROMO_LIVE = true; // Set this to true or false to control promo visibility
+const IS_ALAMBRE_PROMO_LIVE = false; // Set this to true or false to control promo visibility
 
 // --- "OFERTAS BRUTALES" BANNER VISIBILITY AND TEXT ---
 const SHOW_OFFERTAS_BANNER = true; // Set to true to show the "Ofertas Brutales" banner, false to hide
@@ -102,7 +102,7 @@ const ALAMBRE_PROMO_PRODUCT = {
 
 
 const MOCK_PRODUCTS = [
-    { id: 'burrito_casa', name: 'Burrito de la Casa', price: 200.00, imageUrl: 'https://acidwaves.art/DSC04525-2.webp', category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
+    { id: 'burrito_casa', name: 'Burrito Arrachera', price: 200.00, imageUrl: 'https://acidwaves.art/DSC04525-2.webp', category: 'Burritos de la Casa', description: 'Arrachera, queso manchego, arroz, frijoles refritos, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
     { id: 'burrito_chipotle', name: 'Burrito Chipotle', price: 180.00, imageUrl: 'https://acidwaves.art/DSC04511light.webp', category: 'Burritos de la Casa', description: 'Pollo, arroz, frijoles refritos con chipotle y longaniza, guacamole y chipotle dulce. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
     { id: 'burrito_alambre', name: 'Burrito Alambre', price: 190.00, imageUrl: 'https://acidwaves.art/DSC04529light.webp', category: 'Burritos de la Casa', description: 'Res, queso oaxaca, arroz, frijoles refritos, pimientos, cebolla acitronada, guacamole y salsa verde. Incluye ensalada.', customizable: true, customizationOptions: GENERIC_CUSTOMIZATION_BURRITO },
     { id: 'burrito_kid', name: 'Burrito Kid', price: 95.00, imageUrl: 'https://acidwaves.art/DSC04598 (1).webp', category: 'Burritos de la Casa', description: 'Tortilla más pequeña, proteína a elegir, arroz, frijoles refritos y aderezos. Incluye ensalada.', customizable: true,
