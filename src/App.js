@@ -6,14 +6,24 @@ import { ChevronLeft, ShoppingCart, Star, X, PlusCircle, MinusCircle, Trash2,Che
 // To mark an item as sold out, add its 'id' to this list.
 // The item will appear on the menu but will be grayed out and un-purchasable.
 // For example: const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_duo'];
-const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_familiar', 'combo_original']; // Add product IDs here to mark them as sold out
+const SOLD_OUT_ITEMS = []; // Add product IDs here to mark them as sold out
 
 // --- MANAGE SOLD OUT CUSTOMIZATION OPTIONS ---
 // Add the 'value' of customization options here to mark them as sold out.
 const SOLD_OUT_ADEREZOS_OPTIONS = []; // Example: 'Salsa Verde' is sold out
 const SOLD_OUT_CHILES_TATEMADOS_OPTIONS = [];
 const SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS = []; // Example: 'Extra Guacamole' is sold out
-const SOLD_OUT_PROTEIN_OPTIONS = ['arrachera_arma']; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
+const SOLD_OUT_PROTEIN_OPTIONS = []; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
+
+// --- PROMOTIONAL PRODUCTS VISIBILITY ---
+// Set to true to make the 2x Alambre promo visible on the home page.
+const IS_ALAMBRE_PROMO_LIVE = true; // Set this to true or false to control promo visibility
+
+// --- "OFERTAS BRUTALES" BANNER VISIBILITY AND TEXT ---
+const SHOW_OFFERTAS_BANNER = true; // Set to true to show the "Ofertas Brutales" banner, false to hide
+const OFFERTAS_BANNER_TITLE = '¡Ofertas Brutales!';
+const OFFERTAS_BANNER_DESCRIPTION = 'Descubre nuestros combos y ahorra.';
+
 
 // --- DATA CONSTANTS FIRST ---
 const ADEREZOS_OPTIONS_BASE = [
@@ -27,12 +37,19 @@ const CHILES_TATEMADOS_OPTIONS = [
     { label: 'Habanero', value: 'chile_habanero' },
 ].map(opt => ({...opt, isSoldOut: SOLD_OUT_CHILES_TATEMADOS_OPTIONS.includes(opt.value)}));
 
-const CUSTOMIZATION_EXTRAS_OPTIONS = [
+// Base extras options for customization (queso and guacamole only for individual burrito customization)
+const INDIVIDUAL_BURRITO_EXTRAS = [
     { label: 'Extra Queso Oaxaca', value: 'q_oaxaca_extra_add', priceChange: 20.00 },
     { label: 'Extra Queso Manchego', value: 'q_manchego_extra_add', priceChange: 20.00 },
     { label: 'Extra Guacamole (aguacate hass, cebolla, cilantro, jitomate)', value: 'guacamole_extra_add', priceChange: 30.00 },
+].map(opt => ({...opt, isSoldOut: SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS.includes(opt.value)}));
+
+// All customization extras options (including longaniza for non-promo products)
+const CUSTOMIZATION_EXTRAS_OPTIONS = [
+    ...INDIVIDUAL_BURRITO_EXTRAS,
     { label: 'Longaniza (porción)', value: 'longaniza_add', priceChange: 20.00 }
 ].map(opt => ({...opt, isSoldOut: SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS.includes(opt.value)}));
+
 
 const COMBINED_EXTRAS_FOR_CASA_BURRITOS = {
     id: 'extras_casa', title: 'Extras (con costo adicional)', type: 'checkbox', obligatorio: false,
@@ -53,6 +70,35 @@ const THEME_LIME_GREEN_DARKER = '#8ACC1E';
 
 // appId is now just a constant, no longer related to Firebase paths
 const appId = 'brutal-burritos-app';
+
+// --- PROMOTIONAL PRODUCTS ---
+const ALAMBRE_PROMO_CUSTOMIZATION = [
+    { id: 'aderezos_promo', title: 'Aderezos (para ambos burritos, hasta 3 gratis)', type: 'checkbox', maxChoices: 3, obligatorio: false, options: ADEREZOS_OPTIONS_BASE },
+    { id: 'chiles_promo', title: 'Chiles Tatemados (para ambos burritos, opcional)', type: 'checkbox', obligatorio: false, options: CHILES_TATEMADOS_OPTIONS },
+    {
+        id: 'extras_burrito_1', title: 'Extras para Burrito 1 (con costo adicional)', type: 'checkbox', obligatorio: false,
+        options: INDIVIDUAL_BURRITO_EXTRAS // Use only specific extras for individual burritos
+    },
+    {
+        id: 'extras_burrito_2', title: 'Extras para Burrito 2 (con costo adicional)', type: 'checkbox', obligatorio: false,
+        options: INDIVIDUAL_BURRITO_EXTRAS // Use only specific extras for individual burritos
+    },
+    { id: 'special_instructions_promo', title: 'Instrucciones Especiales (para ambos)', type: 'textarea', placeholder: 'Ej: Sin cebolla en ambos, extra picante en uno...', obligatorio: false }
+];
+
+const ALAMBRE_PROMO_PRODUCT = {
+    id: 'promo_alambre_2x',
+    name: '¡PROMOCIÓN! 2 Burritos Alambre',
+    price: 250.00, // Total price for 2 burritos
+    imageUrl: 'https://acidwaves.art/DSC04529light.webp', // Reusing Alambre image
+    category: 'Promociones', // New category for promos
+    description: '¡Llévate 2 de nuestros deliciosos Burritos Alambre por un precio especial! Personaliza cada uno.',
+    validity: 'Válido durante Julio 2025', // New validity field
+    customizable: true, // This promo is now customizable
+    isBundle: true, // Flag to indicate it's a bundle
+    bundleQuantity: 2, // Number of items in the bundle
+    customizationOptions: ALAMBRE_PROMO_CUSTOMIZATION, // Use custom customization for the promo bundle
+};
 
 
 const MOCK_PRODUCTS = [
@@ -104,8 +150,9 @@ const MOCK_COMPLEMENTARY_PRODUCTS = [
     MOCK_PRODUCTS.find(p => p.id === 'bebida_agua_500ml'),
 ].filter(Boolean);
 
-const DISPLAY_CATEGORIES = ['Populares', 'Burritos de la Casa', 'Arma tu Burrito', 'Combos', 'Bebidas', 'Complementos', 'Extras'];
-const POPULARES_SECTION_ORDER = ['Burritos de la Casa', 'Combos', 'Arma tu Burrito', 'Complementos', 'Extras', 'Bebidas'];
+const DISPLAY_CATEGORIES = ['Populares', 'Burritos de la Casa', 'Arma tu Burrito', 'Combos', 'Bebidas', 'Complementos', 'Extras', 'Promociones'];
+const POPULARES_SECTION_ORDER = ['Burritos de la Casa', 'Combos', 'Arma tu Burrito', 'Complementos', 'Extras', 'Bebidas']; // Removed 'Promociones' from here
+
 
 const formatPrice = (price) => price ? `$${price.toFixed(2)}` : '$0.00';
 
@@ -147,7 +194,12 @@ const ProductCard = ({ product, onAddToCart, onCustomize }) => {
             return;
         }
         e.stopPropagation();
-        onCustomize(product);
+        if (product.customizable) {
+            onCustomize(product);
+        } else {
+            // For non-customizable items, directly add to cart with quantity 1
+            onAddToCart(product, 1, {});
+        }
     };
 
     return (
@@ -166,8 +218,8 @@ const ProductCard = ({ product, onAddToCart, onCustomize }) => {
                 )}
                 <button 
                     onClick={handleActionClick} 
-                    aria-label={`Personalizar ${product.name}`} 
-                    className={`absolute top-2 right-2 text-black rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity-75 transition-transform ${isSoldOut ? 'cursor-not-allowed bg-gray-400' : 'hover:scale-110'}`}
+                    aria-label={product.customizable ? `Personalizar ${product.name}` : `Agregar ${product.name}`} 
+                    className={`absolute top-2 right-2 text-black rounded-full p-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity75 transition-transform ${isSoldOut ? 'cursor-not-allowed bg-gray-400' : 'hover:scale-110'}`}
                     style={!isSoldOut ? {backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER } : {}}
                     disabled={isSoldOut}
                 >
@@ -182,6 +234,11 @@ const ProductCard = ({ product, onAddToCart, onCustomize }) => {
                     )}
                 </h3>
                 <p className="text-xs text-gray-600 mb-2">{product.description}</p>
+                {product.validity && (
+                    <p className="text-xs text-gray-500 mt-1 flex items-center">
+                        <Tag size={12} className="mr-1" /> {product.validity}
+                    </p>
+                )}
             </div>
             <div className="p-4 pt-0">
                 <div className="flex items-baseline">
@@ -199,6 +256,34 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
     const pickupAddressPart2 = "Yucalpetén, Mérida, Yucatán";
     const fullPickupAddress = `${pickupAddressPart1} ${pickupAddressPart2}`;
     const pickupAddressLink = `https://www.google.com/maps/search/?api=1&query=$${encodeURIComponent(fullPickupAddress)}`;
+
+    // Function to get products for a specific category, handling promo insertion
+    const getProductsForCategory = (category) => {
+        if (category === 'Burritos de la Casa') {
+            const casaBurritos = [];
+            products.forEach(p => {
+                if (p.category === 'Burritos de la Casa') {
+                    casaBurritos.push(p);
+                    if (p.id === 'burrito_alambre' && IS_ALAMBRE_PROMO_LIVE) {
+                        casaBurritos.push(ALAMBRE_PROMO_PRODUCT);
+                    }
+                }
+            });
+            // Filter out the promo if it was already in MOCK_PRODUCTS and we're manually inserting it
+            return casaBurritos.filter((p, index, self) =>
+                index === self.findIndex((t) => (
+                    t.id === p.id
+                ))
+            );
+        } else if (category === 'Populares') {
+            // For 'Populares', we iterate through POPULARES_SECTION_ORDER and get products for each section
+            // This is handled by the main render logic below, so this function is not strictly needed here
+            // but kept for conceptual clarity if we were to pre-filter all products for 'Populares'
+            return products; // Return all products, filtering happens in the render loop
+        }
+        return products.filter(p => p.category === category);
+    };
+
 
     return (
         <div className="pb-20">
@@ -253,7 +338,12 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
                         Recoger en tienda
                     </button>
                 </div>
-                <div className="p-3 rounded-md mb-4" style={{backgroundColor: `${THEME_BRAND_RED}20`, borderLeft: `4px solid ${THEME_BRAND_RED}`}}> <p className="font-bold" style={{color: THEME_BRAND_RED}}>¡Ofertas Brutales!</p> <p className="text-sm" style={{color: `${THEME_BRAND_RED}E6`}}>Descubre nuestros combos y ahorra.</p> </div>
+                {SHOW_OFFERTAS_BANNER && (
+                    <div className="p-3 rounded-md mb-4" style={{backgroundColor: `${THEME_BRAND_RED}20`, borderLeft: `4px solid ${THEME_BRAND_RED}`}}>
+                        <p className="font-bold" style={{color: THEME_BRAND_RED}}>{OFFERTAS_BANNER_TITLE}</p>
+                        <p className="text-sm" style={{color: `${THEME_BRAND_RED}E6`}}>{OFFERTAS_BANNER_DESCRIPTION}</p>
+                    </div>
+                )}
             </div>
             <div className="bg-white sticky top-0 z-30 shadow-sm">
                 <div className="flex space-x-1 overflow-x-auto p-3 scrollbar-hide">
@@ -263,7 +353,7 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
 
             {selectedCategory === 'Populares' ? (
                 POPULARES_SECTION_ORDER.map(sectionCategory => {
-                    const sectionProducts = products.filter(p => p.category === sectionCategory);
+                    const sectionProducts = getProductsForCategory(sectionCategory); // Use the new helper function
                     if (sectionProducts.length === 0) return null;
                     return (
                         <div key={sectionCategory} className="pt-4">
@@ -278,8 +368,8 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
                 })
             ) : (
                 <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {products.filter(p => p.category === selectedCategory).length > 0 ? (
-                        products.filter(p => p.category === selectedCategory).map(product => (
+                    {getProductsForCategory(selectedCategory).length > 0 ? ( // Use the new helper function
+                        getProductsForCategory(selectedCategory).map(product => (
                             <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} onCustomize={onCustomize} />
                         ))
                     ) : ( <p className="text-gray-600 col-span-full text-center py-8">No hay productos en esta categoría.</p> )}
@@ -329,8 +419,19 @@ const CartItemCard = ({ item, productDetail, onUpdateQuantity, onRemoveItem, onE
                     {discountPercentage > 0 && (<p className="text-xs font-semibold" style={{color: THEME_BRAND_RED}}>-{discountPercentage}%</p>)}
                     {customizationEntries.length > 0 && (
                         <button onClick={() => setCustomizationsOpen(!customizationsOpen)} className="text-xs text-gray-500 hover:text-gray-700 mt-1 flex items-center">
-                            {customizationEntries.map(([key, value], index) => index < 2 ? `${value}` : '').join(', ').substring(0,30)}
-                            {customizationEntries.map(([key, value], index) => index < 2 ? `${value}` : '').join(', ').length > 30 || customizationEntries.length > 2 ? '...' : ''}
+                            {customizationEntries.map(([key, value]) => {
+                                // Handle nested customization objects for promo extras
+                                if (typeof value === 'object' && value !== null) {
+                                    return Object.keys(value).map(subKey => subKey).join(', ');
+                                }
+                                return value;
+                            }).join(', ').substring(0,30)}
+                            {customizationEntries.map(([key, value]) => {
+                                if (typeof value === 'object' && value !== null) {
+                                    return Object.keys(value).map(subKey => subKey).join(', ');
+                                }
+                                return value;
+                            }).join(', ').length > 30 || customizationEntries.length > 2 ? '...' : ''}
                             {customizationEntries.length > 0 && (customizationsOpen ? <ChevronUp size={14} className="ml-1" /> : <ChevronDown size={14} className="ml-1" />)}
                         </button>
                     )}
@@ -344,7 +445,17 @@ const CartItemCard = ({ item, productDetail, onUpdateQuantity, onRemoveItem, onE
                 <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="text-gray-600 p-1 hover:bg-gray-100 rounded-full"><PlusCircle size={22} /></button>
             </div>
         </div>
-        {customizationsOpen && customizationEntries.length > 0 && ( <div className="mt-2 pt-2 border-t border-gray-100"> <p className="text-xs font-semibold text-gray-600 mb-1">Personalizaciones:</p> {customizationEntries.map(([key, value]) => (<p key={key} className="text-xs text-gray-500 ml-2">- {key}: {value}</p>))} </div> )}
+        {customizationsOpen && customizationEntries.length > 0 && ( <div className="mt-2 pt-2 border-t border-gray-100"> <p className="text-xs font-semibold text-gray-600 mb-1">Personalizaciones:</p> {customizationEntries.map(([key, value]) => (
+            <div key={key}>
+                {typeof value === 'object' && value !== null ? (
+                    Object.entries(value).map(([subKey, subValue]) => (
+                        <p key={`${key}-${subKey}`} className="text-xs text-gray-500 ml-2">- {key}: {subKey}: {subValue}</p>
+                    ))
+                ) : (
+                    <p className="text-xs text-gray-500 ml-2">- {key}: {value}</p>
+                )}
+            </div>
+        ))} </div> )}
     </div> );
 };
 
@@ -437,7 +548,12 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
             orderSummary += `- ${item.quantity}x ${item.name} (${formatPrice(item.price)})`;
             if (item.customizations && Object.keys(item.customizations).length > 0) {
                 orderSummary += " (";
-                orderSummary += Object.entries(item.customizations).map(([key, value]) => `${key}: ${value}`).join(', ');
+                orderSummary += Object.entries(item.customizations).map(([key, value]) => {
+                    if (typeof value === 'object' && value !== null) {
+                        return `${key}: ${Object.keys(value).join(', ')}`;
+                    }
+                    return `${key}: ${value}`;
+                }).join(', ');
                 orderSummary += ")";
             }
             orderSummary += "\n";
@@ -639,7 +755,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
 
     useEffect(() => {
         setAllObligatoryDone(areAllObligatorySectionsCompleted());
-    }, [selectedCustomizations, areAllObligatorySectionsCompleted]);
+    }, [areAllObligatorySectionsCompleted]);
 
 
     useEffect(() => {
@@ -680,8 +796,14 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                 } else if (group.type === 'checkbox') {
                     initialSelections[group.id] = {};
                     group.options.forEach(opt => {
-                        if (initialCustomizations[opt.label] === 'Sí' && !opt.isSoldOut) {
+                        // Check if the option was selected in the initial customizations
+                        // For duplicated extras, check for "Extras para Burrito 1: Extra Queso Oaxaca: Sí"
+                        const isSelectedInInitial = initialCustomizations[group.title] && initialCustomizations[group.title][opt.label] === 'Sí';
+                        if (isSelectedInInitial && !opt.isSoldOut) {
                             initialSelections[group.id][opt.value] = true;
+                            if (opt.priceChange) price += opt.priceChange;
+                        } else if (initialCustomizations[opt.label] === 'Sí' && !opt.isSoldOut) { // Fallback for old structure
+                             initialSelections[group.id][opt.value] = true;
                             if (opt.priceChange) price += opt.priceChange;
                         }
                     });
@@ -703,7 +825,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                 if (group.type === 'radio' && group.options.length > 0) {
                     const defaultOption = group.options.find(opt => opt.isDefault && !opt.isSoldOut) || group.options.find(opt => !opt.isSoldOut);
                     initialSelections[group.id] = defaultOption?.value || '';
-                    if (defaultOption?.priceChange && group.id !== 'queso_arma') price += defaultOption.priceChange;
+                    if (defaultOption?.priceChange && group.id !== 'proteina_arma' && group.id !== 'queso_arma') price += defaultOption.priceChange;
                 } else if (group.type === 'checkbox') {
                     initialSelections[group.id] = {};
                     group.options.forEach(opt => { if (opt.isDefault && !opt.isSoldOut) { initialSelections[group.id][opt.value] = true; if (opt.priceChange) price += opt.priceChange; } });
@@ -730,14 +852,15 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                     return prev;
                 }
                 newSelections[groupId] = { ...currentGroupSelections, [optionValue]: !currentGroupSelections[optionValue] };
-            } else if (groupType === 'textarea') {
-                newSelections[groupId] = optionValue;
             } else {
                 newSelections[groupId] = optionValue;
             }
 
             let newPrice = product.price;
-            // Recalculate price based on all selected customizations
+            // For bundles, the base price is for the whole bundle.
+            // Customization price changes are added directly.
+
+            // Calculate base price for 'Arma tu Burrito' if applicable
             if (product.id === 'arma_tu_burrito' && newSelections['proteina_arma']) {
                 const proteinGroup = product.customizationOptions.find(g => g.id === 'proteina_arma');
                 const selectedProteinOpt = proteinGroup.options.find(opt => opt.value === newSelections['proteina_arma'] && !opt.isSoldOut);
@@ -746,6 +869,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                 }
             }
 
+            // Calculate customization costs for the current selections
             product.customizationOptions?.forEach(group => {
                 const selectionInGroup = newSelections[group.id];
                 if (selectionInGroup) {
@@ -756,12 +880,22 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                         Object.keys(selectionInGroup).forEach(valKey => {
                             if (selectionInGroup[valKey]) {
                                 const opt = group.options.find(o => o.value === valKey && !o.isSoldOut);
-                                if (opt && opt.priceChange) newPrice += opt.priceChange;
+                                // If it's a bundle and the extra is for an individual burrito, multiply by bundleQuantity
+                                if (opt && opt.priceChange) {
+                                    if (product.isBundle && product.bundleQuantity && (group.id === 'extras_burrito_1' || group.id === 'extras_burrito_2')) {
+                                        newPrice += opt.priceChange; // Price change is for one burrito
+                                    } else {
+                                        newPrice += opt.priceChange;
+                                    }
+                                }
                             }
                         });
+                    } else if (group.type === 'textarea') {
+                        // Textarea does not affect price
                     }
                 }
             });
+            
             setCurrentPrice(newPrice);
             return newSelections;
         });
@@ -776,19 +910,25 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
                     const selectedOption = group.options.find(opt => opt.value === selectedValue && !opt.isSoldOut);
                     if (selectedOption) finalCustomizationsForCart[group.title] = selectedOption.label;
                 } else if (group.type === 'checkbox') {
+                    const selectedOptionsInGroup = {};
                     Object.entries(selectedValue).forEach(([optionVal, isSelected]) => {
                         if (isSelected) {
                             const selectedOption = group.options.find(opt => opt.value === optionVal && !opt.isSoldOut);
-                            if (selectedOption) finalCustomizationsForCart[selectedOption.label] = 'Sí';
+                            if (selectedOption) selectedOptionsInGroup[selectedOption.label] = 'Sí';
                         }
                     });
+                    if (Object.keys(selectedOptionsInGroup).length > 0) {
+                        finalCustomizationsForCart[group.title] = selectedOptionsInGroup;
+                    }
                 } else if (group.type === 'textarea' && selectedValue.trim() !== '') {
                     finalCustomizationsForCart[group.title] = selectedValue.trim();
                 }
             }
         });
         const itemToAdd = { ...product, price: currentPrice };
-        onAddToCart(itemToAdd, quantity, finalCustomizationsForCart);
+        // For bundles, quantity in cart is always 1 (representing the bundle)
+        // The price already reflects the total for the bundle including customizations
+        onAddToCart(itemToAdd, 1, finalCustomizationsForCart);
         onClose();
     };
 
@@ -834,7 +974,8 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
             </CustomizationSection>
         ));
     };
-    return ( <div className="h-full flex flex-col bg-white"> <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10"> <button onClick={onClose} className="text-gray-600 hover:text-gray-800"> <X size={24} /> </button> <h2 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h2> <div className="w-6"></div> </div> <div className="flex-grow overflow-y-auto p-4 pb-28 bg-gray-50"> <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-lg mb-4 shadow-md" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x300/757575/FFFFFF?text=Sin+Imagen`; }}/> <p className="text-gray-700 mb-1 text-sm">{product.description}</p> <p className="text-2xl font-bold mb-6 text-gray-800">{formatPrice(currentPrice)}</p> {renderCustomizationOptions()} </div>
+    return ( <div className="h-full flex flex-col bg-white"> <div className="flex items-center justify-between p-4 border-b bg-white sticky top-0 z-10"> <button onClick={onClose} className="text-gray-600 hover:text-gray-800"> <X size={24} /> </button> <h2 className="text-lg font-semibold text-gray-800 truncate">{product.name}</h2> <div className="w-6"></div> </div> <div className="flex-grow overflow-y-auto p-4 pb-28 bg-gray-50"> <img src={product.imageUrl} alt={product.name} className="w-full h-48 object-cover rounded-lg mb-4 shadow-md" onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/600x300/757575/FFFFFF?text=Sin+Imagen`; }}/> <p className="text-gray-700 mb-1 text-sm">{product.description}</p> <p className="text-2xl font-bold mb-6 text-gray-800">{formatPrice(currentPrice)}</p>
+        {renderCustomizationOptions()} </div>
         <div className="bg-white p-3 border-t shadow-top flex items-center justify-between space-x-3 sticky bottom-0 z-10">
             <div className="flex items-center">
                 <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-2 rounded-md hover:bg-gray-200 text-gray-700 border border-gray-300 shadow-sm" aria-label="Disminuir cantidad" > <MinusCircle size={24} /> </button>
@@ -885,7 +1026,7 @@ const TextareaOption = ({ placeholder, value, onChange }) => (
 
 function App() {
     const [currentPage, setCurrentPage] = useState('home');
-    const [products, setProducts] = useState(MOCK_PRODUCTS);
+    const [products, setProducts] = useState([]); // Initialize as empty array
     const [cartItems, setCartItems] = useState([]);
     const [userId, setUserId] = useState(null); // userId will now be a local UUID
     const [isAuthReady, setIsAuthReady] = useState(false);
@@ -902,8 +1043,16 @@ function App() {
     }, []);
 
     useEffect(() => {
-        setProducts(MOCK_PRODUCTS);
-    }, []); 
+        // Create a mutable copy of MOCK_PRODUCTS
+        const initialProducts = [...MOCK_PRODUCTS];
+
+        // The HomePage's getProductsForCategory function will now handle the insertion
+        // of ALAMBRE_PROMO_PRODUCT directly into the 'Burritos de la Casa' section
+        // so we don't need to splice it into MOCK_PRODUCTS here globally.
+        // We just need to make sure ALAMBRE_PROMO_PRODUCT is available for lookup.
+        // MOCK_PRODUCTS already includes it implicitly as it's a constant.
+        setProducts(initialProducts);
+    }, []);
 
     const handleOpenCustomizationPanel = (product, cartItemToEdit = null) => {
         setProductToCustomize(product);
@@ -922,7 +1071,7 @@ function App() {
 
     // Modified handleAddToCart to only use local state
     const handleAddToCart = async (productData, quantity, customizations = {}, isComplementary = false, editingCartItemId = null) => {
-        if (!isAuthReady) { console.warn("Auth not ready."); return; } // Still relevant for local state
+        if (!isAuthReady) { console.warn("Auth not ready."); }
         const cartItemPayload = {
             productId: productData.id,
             name: productData.name,
