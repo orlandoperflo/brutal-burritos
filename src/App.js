@@ -29,7 +29,7 @@ const OFFERTAS_BANNER_DESCRIPTION = 'Descubre nuestros combos y ahorra.';
 const ADEREZOS_OPTIONS_BASE = [
     { label: 'Salsa Verde', value: 'salsa_verde' },
     { label: 'Chipotle Dulce', value: 'chipotle_dulce' },
-    { label: 'Crema de Ajo (pica)', value: 'crema_ajo_pica' },
+    { label: 'Crema de Ajo', value: 'crema_ajo_pica' },
 ].map(opt => ({...opt, isSoldOut: SOLD_OUT_ADEREZOS_OPTIONS.includes(opt.value)}));
 
 const CHILES_TATEMADOS_OPTIONS = [
