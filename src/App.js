@@ -6,18 +6,19 @@ import { ChevronLeft, ShoppingCart, Star, X, PlusCircle, MinusCircle, Trash2,Che
 // To mark an item as sold out, add its 'id' to this list.
 // The item will appear on the menu but will be grayed out and un-purchasable.
 // For example: const SOLD_OUT_ITEMS = ['burrito_casa', 'combo_duo'];
-const SOLD_OUT_ITEMS = []; // Add product IDs here to mark them as sold out
+const SOLD_OUT_ITEMS = ['comp_verduras']; // Add product IDs here to mark them as sold out
 
 // --- MANAGE SOLD OUT CUSTOMIZATION OPTIONS ---
 // Add the 'value' of customization options here to mark them as sold out.
 const SOLD_OUT_ADEREZOS_OPTIONS = []; // Example: 'Salsa Verde' is sold out
 const SOLD_OUT_CHILES_TATEMADOS_OPTIONS = [];
 const SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS = []; // Example: 'Extra Guacamole' is sold out
-const SOLD_OUT_PROTEIN_OPTIONS = []; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
+const SOLD_OUT_PROTEIN_OPTIONS = ['arrachera_arma']; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
 
 // --- PROMOTIONAL PRODUCTS VISIBILITY ---
 // Set to true to make the 2x Alambre promo visible on the home page.
 const IS_ALAMBRE_PROMO_LIVE = true; // Set this to true or false to control promo visibility
+const IS_ARRACHERA_PROMO_LIVE = true; // Set this to true or false to control promo visibility
 
 // --- "OFERTAS BRUTALES" BANNER VISIBILITY AND TEXT ---
 const SHOW_OFFERTAS_BANNER = true; // Set to true to show the "Ofertas Brutales" banner, false to hide
@@ -91,13 +92,43 @@ const ALAMBRE_PROMO_PRODUCT = {
     name: '¡PROMOCIÓN! 2 Burritos Alambre',
     price: 250.00, // Total price for 2 burritos
     imageUrl: 'https://acidwaves.art/DSC04529light.webp', // Reusing Alambre image
-    category: 'Promociones', // New category for promos
+    category: 'Burritos de la Casa', // Changed category to 'Burritos de la Casa'
     description: '¡Llévate 2 de nuestros deliciosos Burritos Alambre por un precio especial! Personaliza cada uno.',
     validity: 'Válido durante Julio 2025', // New validity field
     customizable: true, // This promo is now customizable
     isBundle: true, // Flag to indicate it's a bundle
     bundleQuantity: 2, // Number of items in the bundle
     customizationOptions: ALAMBRE_PROMO_CUSTOMIZATION, // Use custom customization for the promo bundle
+};
+
+// New Arrachera Promo Customization (similar to Alambre, but for Arrachera)
+const ARRACHERA_PROMO_CUSTOMIZATION = [
+    { id: 'aderezos_arrachera_promo', title: 'Aderezos (para ambos burritos, hasta 3 gratis)', type: 'checkbox', maxChoices: 3, obligatorio: false, options: ADEREZOS_OPTIONS_BASE },
+    { id: 'chiles_arrachera_promo', title: 'Chiles Tatemados (para ambos burritos, opcional)', type: 'checkbox', obligatorio: false, options: CHILES_TATEMADOS_OPTIONS },
+    {
+        id: 'extras_arrachera_burrito_1', title: 'Extras para Burrito 1 (con costo adicional)', type: 'checkbox', obligatorio: false,
+        options: INDIVIDUAL_BURRITO_EXTRAS
+    },
+    {
+        id: 'extras_arrachera_burrito_2', title: 'Extras para Burrito 2 (con costo adicional)', type: 'checkbox', obligatorio: false,
+        options: INDIVIDUAL_BURRITO_EXTRAS
+    },
+    { id: 'special_instructions_arrachera_promo', title: 'Instrucciones Especiales (para ambos)', type: 'textarea', placeholder: 'Ej: Sin cebolla en ambos, extra picante en uno...', obligatorio: false }
+];
+
+// New Arrachera Promo Product
+const ARRACHERA_PROMO_PRODUCT = {
+    id: 'promo_arrachera_2x',
+    name: '¡PROMOCIÓN! 2 Burritos Arrachera',
+    price: 350.00,
+    imageUrl: 'https://acidwaves.art/DSC04525-2.webp', // Reusing Arrachera image
+    category: 'Burritos de la Casa', // Changed category to 'Burritos de la Casa'
+    description: '¡Llévate 2 de nuestros deliciosos Burritos Arrachera por un precio especial! Incluye 1L de Té. Personaliza cada uno.',
+    validity: 'Válido solo hoy 26 Julio hasta agotar existencias',
+    customizable: true,
+    isBundle: true,
+    bundleQuantity: 2,
+    customizationOptions: ARRACHERA_PROMO_CUSTOMIZATION,
 };
 
 
@@ -151,7 +182,7 @@ const MOCK_COMPLEMENTARY_PRODUCTS = [
 ].filter(Boolean);
 
 const DISPLAY_CATEGORIES = ['Populares', 'Burritos de la Casa', 'Arma tu Burrito', 'Combos', 'Bebidas', 'Complementos', 'Extras'];
-const POPULARES_SECTION_ORDER = ['Burritos de la Casa', 'Combos', 'Arma tu Burrito', 'Complementos', 'Extras', 'Bebidas']; // Removed 'Promociones' from here
+const POPULARES_SECTION_ORDER = ['Burritos de la Casa', 'Combos', 'Arma tu Burrito', 'Complementos', 'Extras', 'Bebidas'];
 
 
 const formatPrice = (price) => price ? `$${price.toFixed(2)}` : '$0.00';
@@ -261,25 +292,28 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
     const getProductsForCategory = (category) => {
         if (category === 'Burritos de la Casa') {
             const casaBurritos = [];
-            products.forEach(p => {
-                if (p.category === 'Burritos de la Casa') {
-                    casaBurritos.push(p);
-                    if (p.id === 'burrito_alambre' && IS_ALAMBRE_PROMO_LIVE) {
+            const baseCasaProducts = products.filter(p => p.category === 'Burritos de la Casa' && p.id !== ALAMBRE_PROMO_PRODUCT.id && p.id !== ARRACHERA_PROMO_PRODUCT.id);
+
+            baseCasaProducts.forEach(p => {
+                casaBurritos.push(p);
+                if (p.id === 'burrito_alambre') {
+                    if (IS_ALAMBRE_PROMO_LIVE) {
                         casaBurritos.push(ALAMBRE_PROMO_PRODUCT);
+                    }
+                    if (IS_ARRACHERA_PROMO_LIVE) {
+                        casaBurritos.push(ARRACHERA_PROMO_PRODUCT);
                     }
                 }
             });
-            // Filter out the promo if it was already in MOCK_PRODUCTS and we're manually inserting it
-            return casaBurritos.filter((p, index, self) =>
-                index === self.findIndex((t) => (
-                    t.id === p.id
-                ))
-            );
+            return casaBurritos;
         } else if (category === 'Populares') {
-            // For 'Populares', we iterate through POPULARES_SECTION_ORDER and get products for each section
-            // This is handled by the main render logic below, so this function is not strictly needed here
-            // but kept for conceptual clarity if we were to pre-filter all products for 'Populares'
-            return products; // Return all products, filtering happens in the render loop
+            const popularProducts = [];
+            POPULARES_SECTION_ORDER.forEach(sectionCat => {
+                const sectionSpecificProducts = getProductsForCategory(sectionCat); // Recursive call
+                popularProducts.push(...sectionSpecificProducts);
+            });
+            // Remove duplicates from popularProducts if any
+            return popularProducts.filter((p, index, self) => index === self.findIndex((t) => t.id === p.id));
         }
         return products.filter(p => p.category === category);
     };
@@ -1043,16 +1077,32 @@ function App() {
     }, []);
 
     useEffect(() => {
-        // Create a mutable copy of MOCK_PRODUCTS
-        const initialProducts = [...MOCK_PRODUCTS];
+        let finalProducts = [...MOCK_PRODUCTS]; // Start with base products
 
-        // The HomePage's getProductsForCategory function will now handle the insertion
-        // of ALAMBRE_PROMO_PRODUCT directly into the 'Burritos de la Casa' section
-        // so we don't need to splice it into MOCK_PRODUCTS here globally.
-        // We just need to make sure ALAMBRE_PROMO_PRODUCT is available for lookup.
-        // MOCK_PRODUCTS already includes it implicitly as it's a constant.
-        setProducts(initialProducts);
-    }, []);
+        // Find the index of 'burrito_alambre'
+        const alambreIndex = finalProducts.findIndex(p => p.id === 'burrito_alambre');
+
+        if (alambreIndex !== -1) {
+            let insertIndex = alambreIndex + 1; // Start inserting after burrito_alambre
+
+            if (IS_ALAMBRE_PROMO_LIVE) {
+                // Ensure ALAMBRE_PROMO_PRODUCT is not already in the list to avoid duplicates
+                if (!finalProducts.some(p => p.id === ALAMBRE_PROMO_PRODUCT.id)) {
+                    finalProducts.splice(insertIndex, 0, ALAMBRE_PROMO_PRODUCT);
+                    insertIndex++; // Increment insert index for the next promo
+                }
+            }
+
+            if (IS_ARRACHERA_PROMO_LIVE) {
+                // Ensure ARRACHERA_PROMO_PRODUCT is not already in the list
+                if (!finalProducts.some(p => p.id === ARRACHERA_PROMO_PRODUCT.id)) {
+                    finalProducts.splice(insertIndex, 0, ARRACHERA_PROMO_PRODUCT);
+                    // No need to increment insertIndex further as this is the last insertion
+                }
+            }
+        }
+        setProducts(finalProducts);
+    }, []); // Empty dependency array means this runs once on mount
 
     const handleOpenCustomizationPanel = (product, cartItemToEdit = null) => {
         setProductToCustomize(product);
