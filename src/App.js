@@ -2,20 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 // Removed all Firebase imports
 import { ChevronLeft, ShoppingCart, Star, X, PlusCircle, MinusCircle, Trash2,ChevronDown, ChevronUp, Tag, Gift, MapPin, CreditCard, Clock, Home, List, ChevronRight, Settings2, Plus, MessageSquare, Edit3,Flame, User, Phone, Truck, Package, DollarSign, Repeat } from 'lucide-react';
 
-// --- DELIVERY PRICING CONSTANTS (Tiered Distance-Based Model) ---
-const RESTAURANT_LOCATION = { lat: 20.97593502132171, lng: -89.66231435767148 };
-
-// Define distance tiers and their corresponding per-kilometer rates
-const DELIVERY_TIERS = [
-    { maxDistanceKm: 3, baseFee: 40, ratePerKm: 0 }, // First 3km covered by base fee
-    { maxDistanceKm: 7, ratePerKm: 7 }, // 3km to 7km
-    { maxDistanceKm: 15, ratePerKm: 10 }, // 7km to 15km
-    { maxDistanceKm: Infinity, ratePerKm: 15 } // 15km and beyond
-];
-
-const AVERAGE_SPEED_KMH = 20; // Assumed average delivery speed in km/h for time estimation
-const SURGE_MULTIPLIER = 1.0; // Set to 1.0 for no surge. Change to e.g., 1.2 for 20% surge.
-
 // --- MANAGE SOLD OUT ITEMS ---
 // To mark an item as sold out, add its 'id' to this list.
 // The item will appear on the menu but will be grayed out and un-purchasable.
@@ -138,7 +124,7 @@ const ARRACHERA_PROMO_PRODUCT = {
     imageUrl: 'https://acidwaves.art/DSC04525-2.webp', // Reusing Arrachera image
     category: 'Burritos de la Casa', // Changed category to 'Burritos de la Casa'
     description: '¡Llévate 2 de nuestros deliciosos Burritos Arrachera por un precio especial! Incluye 1L de Té. Personaliza cada uno.',
-    validity: 'Válido solo hoy 27 Julio hasta agotar existencias',
+    validity: 'Válido solo hoy 26 Julio hasta agotar existencias',
     customizable: true,
     isBundle: true,
     bundleQuantity: 2,
@@ -561,26 +547,6 @@ const CartPage = ({ cartItems, products, onUpdateQuantity, onRemoveItem, setCurr
     </div> );
 };
 
-// Haversine distance function (moved from the previous HTML app)
-function haversineDistance(coords1, coords2) {
-    const R = 6371; // Radius of Earth in kilometers
-    const lat1 = coords1.lat * Math.PI / 180;
-    const lon1 = coords1.lng * Math.PI / 180;
-    const lat2 = coords2.lat * Math.PI / 180;
-    const lon2 = coords2.lng * Math.PI / 180;
-
-    const dLat = lat2 - lat1;
-    const dLon = lon2 - lon1;
-
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1) * Math.cos(lat2) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    return R * c; // Distance in kilometers
-}
-
-
 const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDeliveryMode }) => {
     const [orderType, setOrderType] = useState(initialDeliveryMode || 'delivery');
     const [streetAndNumber, setStreetAndNumber] = useState('');
@@ -591,92 +557,9 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
     const [customerPhone, setCustomerPhone] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('card'); // Default to 'card'
 
-    const [deliveryFee, setDeliveryFee] = useState(0); // State for dynamic delivery fee
-    const [isCalculatingDelivery, setIsCalculatingDelivery] = useState(false); // Loading state for delivery fee
-
     const pickupAddress = "Brutal Burritos, Calle 69E #224, Yucalpetén, Mérida, Yucatán";
+    const deliveryFee = orderType === 'delivery' ? 40.00 : 0;
     const total = subtotal + deliveryFee;
-
-    // Effect to calculate delivery fee when address changes or order type is delivery
-    useEffect(() => {
-        const calculateFee = async () => {
-            // Only proceed if delivery is selected AND neighborhood is provided
-            if (orderType === 'delivery' && neighborhood) {
-                setIsCalculatingDelivery(true);
-                // Construct full address, prioritizing street and number if available, but ensuring neighborhood is always included
-                const fullAddress = `${streetAndNumber ? streetAndNumber + ', ' : ''}${neighborhood}, Merida, Yucatan, ${zipCode}`.trim().replace(/,(\s*,)+/g, ',').replace(/^,|,$/g, '');
-
-                try {
-                    // Geocode the customer's address using Nominatim (OpenStreetMap)
-                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
-                    const response = await fetch(nominatimUrl, {
-                        headers: {
-                            'User-Agent': 'BrutalBurritosDeliveryApp/1.0 (your-email@example.com)' // Required by Nominatim policy
-                        }
-                    });
-                    const geocodeResult = await response.json();
-
-                    if (!geocodeResult || geocodeResult.length === 0) {
-                        // Fallback to base fee if address not found
-                        setDeliveryFee(DELIVERY_TIERS[0].baseFee); // Fallback to the base fee of the first tier
-                        console.warn("Could not geocode address, falling back to base delivery fee.");
-                        return;
-                    }
-
-                    const customerLocation = {
-                        lat: parseFloat(geocodeResult[0].lat),
-                        lng: parseFloat(geocodeResult[0].lon)
-                    };
-
-                    // Calculate straight-line distance using Haversine formula
-                    const distanceInKm = haversineDistance(RESTAURANT_LOCATION, customerLocation);
-                    
-                    let calculatedFee = 0;
-                    let remainingDistance = distanceInKm;
-
-                    // Apply tiered pricing
-                    DELIVERY_TIERS.forEach((tier, index) => {
-                        if (remainingDistance > 0) {
-                            const tierStartKm = index === 0 ? 0 : DELIVERY_TIERS[index - 1].maxDistanceKm;
-                            const distanceInTier = Math.min(remainingDistance, tier.maxDistanceKm - tierStartKm);
-
-                            if (index === 0) {
-                                // For the first tier, apply the base fee if within maxDistanceKm
-                                calculatedFee += tier.baseFee;
-                            } else {
-                                // For subsequent tiers, apply rate per km for the distance within that tier
-                                calculatedFee += distanceInTier * tier.ratePerKm;
-                            }
-                            remainingDistance -= distanceInTier;
-                        }
-                    });
-
-                    // Apply the new discount if the calculated fee is over 40
-                    if (calculatedFee > 40) {
-                        calculatedFee = Math.max(0, calculatedFee - 10); // Ensure fee doesn't go negative
-                    }
-
-                    calculatedFee *= SURGE_MULTIPLIER; // Apply surge if any
-                    setDeliveryFee(Math.ceil(calculatedFee)); // Round up
-                } catch (error) {
-                    console.error("Error calculating delivery price:", error);
-                    setDeliveryFee(DELIVERY_TIERS[0].baseFee); // Fallback on error to the base fee of the first tier
-                } finally {
-                    setIsCalculatingDelivery(false);
-                }
-            } else {
-                setDeliveryFee(0); // No delivery fee for pickup or if neighborhood is not provided
-                setIsCalculatingDelivery(false);
-            }
-        };
-
-        const debounceTimeout = setTimeout(() => {
-            calculateFee();
-        }, 500); // Debounce to prevent too many API calls on rapid typing
-
-        return () => clearTimeout(debounceTimeout); // Cleanup debounce
-    }, [orderType, streetAndNumber, neighborhood, zipCode]);
-
 
     const handleContinueToWhatsApp = () => {
         let orderSummary = "¡Hola Brutal Burritos! esta es mi orden:\n\n";
@@ -723,7 +606,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         orderSummary += `*Método de Pago:* ${paymentMethodText}\n\n`;
 
         orderSummary += `*Costo de Productos:* ${formatPrice(subtotal)}\n`;
-        orderSummary += `*Costo de Envío:* ${formatPrice(deliveryFee)}\n`; // Use dynamic deliveryFee
+        orderSummary += `*Costo de Envío:* ${formatPrice(deliveryFee)}\n`;
         orderSummary += `*Total a Pagar:* ${formatPrice(total)}\n\n`;
         orderSummary += "¡Gracias!";
 
@@ -854,11 +737,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                 </div>
                 <div className="flex justify-between text-sm text-gray-700">
                     <span>Costo de envío</span>
-                    {isCalculatingDelivery ? (
-                        <div className="loading-spinner" style={{display: 'block'}}></div>
-                    ) : (
-                        <span style={{color: deliveryFee > 0 ? THEME_BRAND_RED : 'inherit'}}>{formatPrice(deliveryFee)}</span>
-                    )}
+                    <span style={{color: deliveryFee > 0 ? THEME_BRAND_RED : 'inherit'}}>{formatPrice(deliveryFee)}</span>
                 </div>
             </div>
         </div>
@@ -873,7 +752,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     onClick={handleContinueToWhatsApp}
                     className="px-6 py-2 text-black rounded-full transition-colors font-semibold text-md shadow-md"
                     style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}}
-                    disabled={!paymentMethod || (orderType === 'delivery' && (!neighborhood || isCalculatingDelivery)) || !customerName || !customerPhone}
+                    disabled={!paymentMethod || (orderType === 'delivery' && (!streetAndNumber || !neighborhood || !zipCode)) || !customerName || !customerPhone}
                 >
                     Continuar
                 </button>
@@ -993,7 +872,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
 
 
     const handleOptionChange = (groupId, optionValue, groupType, isOptionSoldOut) => {
-        if (isSoldOut) return; // Prevent selecting sold out options
+        if (isOptionSoldOut) return; // Prevent selecting sold out options
 
         setSelectedCustomizations(prev => {
             const newSelections = { ...prev };
