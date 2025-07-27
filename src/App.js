@@ -993,7 +993,7 @@ const CustomizationPlaceholderPage = ({ product, onAddToCart, onClose, initialQu
 
 
     const handleOptionChange = (groupId, optionValue, groupType, isOptionSoldOut) => {
-        if (isSoldOut) return; // Prevent selecting sold out options
+        if (isOptionSoldOut) return; // Prevent selecting sold out options
 
         setSelectedCustomizations(prev => {
             const newSelections = { ...prev };
