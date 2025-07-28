@@ -591,91 +591,19 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
     const [customerPhone, setCustomerPhone] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('card'); // Default to 'card'
 
-    const [deliveryFee, setDeliveryFee] = useState(0); // State for dynamic delivery fee
-    const [isCalculatingDelivery, setIsCalculatingDelivery] = useState(false); // Loading state for delivery fee
+    // Delivery fee and distance are no longer calculated dynamically here
+    const deliveryFee = 0; // Fixed to 0 for display purposes as per new requirement
+    const deliveryDistanceKm = 0; // Fixed to 0 for display purposes
 
     const pickupAddress = "Brutal Burritos, Calle 69E #224, Yucalpetén, Mérida, Yucatán";
-    const total = subtotal + deliveryFee;
+    const total = subtotal; // Total is now just subtotal, delivery fee is handled separately
 
-    // Effect to calculate delivery fee when address changes or order type is delivery
+    // Removed useEffect for delivery fee calculation
     useEffect(() => {
-        const calculateFee = async () => {
-            // Only proceed if delivery is selected AND neighborhood is provided
-            if (orderType === 'delivery' && neighborhood) {
-                setIsCalculatingDelivery(true);
-                // Construct full address, prioritizing street and number if available, but ensuring neighborhood is always included
-                const fullAddress = `${streetAndNumber ? streetAndNumber + ', ' : ''}${neighborhood}, Merida, Yucatan, ${zipCode}`.trim().replace(/,(\s*,)+/g, ',').replace(/^,|,$/g, '');
-
-                try {
-                    // Geocode the customer's address using Nominatim (OpenStreetMap)
-                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(fullAddress)}`;
-                    const response = await fetch(nominatimUrl, {
-                        headers: {
-                            'User-Agent': 'BrutalBurritosDeliveryApp/1.0 (your-email@example.com)' // Required by Nominatim policy
-                        }
-                    });
-                    const geocodeResult = await response.json();
-
-                    if (!geocodeResult || geocodeResult.length === 0) {
-                        // Fallback to base fee if address not found
-                        setDeliveryFee(DELIVERY_TIERS[0].baseFee); // Fallback to the base fee of the first tier
-                        console.warn("Could not geocode address, falling back to base delivery fee.");
-                        return;
-                    }
-
-                    const customerLocation = {
-                        lat: parseFloat(geocodeResult[0].lat),
-                        lng: parseFloat(geocodeResult[0].lon)
-                    };
-
-                    // Calculate straight-line distance using Haversine formula
-                    const distanceInKm = haversineDistance(RESTAURANT_LOCATION, customerLocation);
-                    
-                    let calculatedFee = 0;
-                    let remainingDistance = distanceInKm;
-
-                    // Apply tiered pricing
-                    DELIVERY_TIERS.forEach((tier, index) => {
-                        if (remainingDistance > 0) {
-                            const tierStartKm = index === 0 ? 0 : DELIVERY_TIERS[index - 1].maxDistanceKm;
-                            const distanceInTier = Math.min(remainingDistance, tier.maxDistanceKm - tierStartKm);
-
-                            if (index === 0) {
-                                // For the first tier, apply the base fee if within maxDistanceKm
-                                calculatedFee += tier.baseFee;
-                            } else {
-                                // For subsequent tiers, apply rate per km for the distance within that tier
-                                calculatedFee += distanceInTier * tier.ratePerKm;
-                            }
-                            remainingDistance -= distanceInTier;
-                        }
-                    });
-
-                    // Apply the new discount if the calculated fee is over 40
-                    if (calculatedFee > 40) {
-                        calculatedFee = Math.max(0, calculatedFee - 10); // Ensure fee doesn't go negative
-                    }
-
-                    calculatedFee *= SURGE_MULTIPLIER; // Apply surge if any
-                    setDeliveryFee(Math.ceil(calculatedFee)); // Round up
-                } catch (error) {
-                    console.error("Error calculating delivery price:", error);
-                    setDeliveryFee(DELIVERY_TIERS[0].baseFee); // Fallback on error to the base fee of the first tier
-                } finally {
-                    setIsCalculatingDelivery(false);
-                }
-            } else {
-                setDeliveryFee(0); // No delivery fee for pickup or if neighborhood is not provided
-                setIsCalculatingDelivery(false);
-            }
-        };
-
-        const debounceTimeout = setTimeout(() => {
-            calculateFee();
-        }, 500); // Debounce to prevent too many API calls on rapid typing
-
-        return () => clearTimeout(debounceTimeout); // Cleanup debounce
-    }, [orderType, streetAndNumber, neighborhood, zipCode]);
+        if (orderType === 'delivery' && paymentMethod === 'cash') {
+            setPaymentMethod('card'); // Default to card if delivery is selected and cash was chosen
+        }
+    }, [orderType, paymentMethod]);
 
 
     const handleContinueToWhatsApp = () => {
@@ -723,7 +651,8 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
         orderSummary += `*Método de Pago:* ${paymentMethodText}\n\n`;
 
         orderSummary += `*Costo de Productos:* ${formatPrice(subtotal)}\n`;
-        orderSummary += `*Costo de Envío:* ${formatPrice(deliveryFee)}\n`; // Use dynamic deliveryFee
+        // Updated delivery cost message
+        orderSummary += `*Costo de Envío:* Se calculará al confirmar en WhatsApp.\n`;
         orderSummary += `*Total a Pagar:* ${formatPrice(total)}\n\n`;
         orderSummary += "¡Gracias!";
 
@@ -781,7 +710,8 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                         <label htmlFor="streetAndNumber" className="block text-sm font-medium text-gray-600 mb-1">Calle y Número</label>
                         <input type="text" id="streetAndNumber" value={streetAndNumber} onChange={(e) => setStreetAndNumber(e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-md text-base focus:ring-2 focus:border-transparent"
-                            style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}} />
+                            style={{borderColor: THEME_LIME_GREEN_DARKER, focusRingColor: THEME_LIME_GREEN_DARKER}}
+                            /> {/* Removed placeholder */}
                     </div>
                      <div>
                         <label htmlFor="neighborhood" className="block text-sm font-medium text-gray-600 mb-1">Colonia</label>
@@ -826,8 +756,9 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     <span className="text-sm text-gray-700">Transferencia</span>
                 </button>
                 <button onClick={() => setPaymentMethod('cash')}
-                        className={`w-full flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-all ${paymentMethod === 'cash' ? 'ring-2' : 'border-gray-300'}`}
-                        style={paymentMethod === 'cash' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}} >
+                        className={`w-full flex items-center p-3 border rounded-lg cursor-pointer transition-all ${paymentMethod === 'cash' ? 'ring-2' : 'border-gray-300'} ${orderType === 'delivery' ? 'opacity-50 cursor-not-allowed bg-gray-100' : 'hover:bg-gray-50'}`}
+                        style={paymentMethod === 'cash' && orderType !== 'delivery' ? {borderColor: THEME_LIME_GREEN, backgroundColor: `${THEME_LIME_GREEN}22`, ringColor: THEME_LIME_GREEN_DARKER} : {}}
+                        disabled={orderType === 'delivery'} >
                     <DollarSign size={20} className="mr-2 text-gray-700"/>
                     <span className="text-sm text-gray-700">Efectivo</span>
                 </button>
@@ -854,11 +785,8 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                 </div>
                 <div className="flex justify-between text-sm text-gray-700">
                     <span>Costo de envío</span>
-                    {isCalculatingDelivery ? (
-                        <div className="loading-spinner" style={{display: 'block'}}></div>
-                    ) : (
-                        <span style={{color: deliveryFee > 0 ? THEME_BRAND_RED : 'inherit'}}>{formatPrice(deliveryFee)}</span>
-                    )}
+                    {/* Display message instead of calculated fee */}
+                    <span className="text-sm text-gray-500">Se calculará al confirmar en WhatsApp</span>
                 </div>
             </div>
         </div>
@@ -873,7 +801,7 @@ const CheckoutPage = ({ cartItems, products, setCurrentPage, subtotal, initialDe
                     onClick={handleContinueToWhatsApp}
                     className="px-6 py-2 text-black rounded-full transition-colors font-semibold text-md shadow-md"
                     style={{backgroundColor: THEME_LIME_GREEN, borderColor: THEME_LIME_GREEN_DARKER}}
-                    disabled={!paymentMethod || (orderType === 'delivery' && (!neighborhood || isCalculatingDelivery)) || !customerName || !customerPhone}
+                    disabled={!paymentMethod || (orderType === 'delivery' && (!streetAndNumber || !neighborhood || !zipCode)) || !customerName || !customerPhone || (orderType === 'delivery' && paymentMethod === 'cash')}
                 >
                     Continuar
                 </button>
