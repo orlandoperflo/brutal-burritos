@@ -31,7 +31,7 @@ const SOLD_OUT_PROTEIN_OPTIONS = ['arrachera_arma']; // Example: 'Res' protein i
 
 // --- PROMOTIONAL PRODUCTS VISIBILITY ---
 // Set to true to make the 2x Alambre promo visible on the home page.
-const IS_ALAMBRE_PROMO_LIVE = true; // Set this to true or false to control promo visibility
+const IS_ALAMBRE_PROMO_LIVE = false; // Set this to true or false to control promo visibility
 const IS_ARRACHERA_PROMO_LIVE = false; // Set this to true or false to control promo visibility
 
 // --- "OFERTAS BRUTALES" BANNER VISIBILITY AND TEXT ---
