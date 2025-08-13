@@ -27,7 +27,7 @@ const SOLD_OUT_ITEMS = ['comp_verduras']; // Add product IDs here to mark them a
 const SOLD_OUT_ADEREZOS_OPTIONS = []; // Example: 'Salsa Verde' is sold out
 const SOLD_OUT_CHILES_TATEMADOS_OPTIONS = [];
 const SOLD_OUT_CUSTOMIZATION_EXTRAS_OPTIONS = []; // Example: 'Extra Guacamole' is sold out
-const SOLD_OUT_PROTEIN_OPTIONS = ['arrachera_arma']; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
+const SOLD_OUT_PROTEIN_OPTIONS = []; // Example: 'Res' protein is sold out for Kid and Arma tu Burrito
 
 // --- PROMOTIONAL PRODUCTS VISIBILITY ---
 // Set to true to make the 2x Alambre promo visible on the home page.
