@@ -138,7 +138,7 @@ const ARRACHERA_PROMO_PRODUCT = {
     imageUrl: 'https://acidwaves.art/DSC04525-2.webp', // Reusing Arrachera image
     category: 'Burritos de la Casa', // Changed category to 'Burritos de la Casa'
     description: '¡Llévate 2 de nuestros deliciosos Burritos Arrachera por un precio especial! Incluye 1L de Té. Personaliza cada uno.',
-    validity: 'Válido solo hoy 26 Julio hasta agotar existencias',
+    validity: 'Válido Agosto 2025',
     customizable: true,
     isBundle: true,
     bundleQuantity: 2,
