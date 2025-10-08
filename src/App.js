@@ -32,7 +32,7 @@ const SOLD_OUT_PROTEIN_OPTIONS = []; // Example: 'Res' protein is sold out for K
 // --- PROMOTIONAL PRODUCTS VISIBILITY ---
 // Set to true to make the 2x Alambre promo visible on the home page.
 const IS_ALAMBRE_PROMO_LIVE = false; // Set this to true or false to control promo visibility
-const IS_ARRACHERA_PROMO_LIVE = false; // Set this to true or false to control promo visibility
+const IS_ARRACHERA_PROMO_LIVE = true; // Set this to true or false to control promo visibility
 
 // --- "OFERTAS BRUTALES" BANNER VISIBILITY AND TEXT ---
 const SHOW_OFFERTAS_BANNER = true; // Set to true to show the "Ofertas Brutales" banner, false to hide
@@ -138,7 +138,7 @@ const ARRACHERA_PROMO_PRODUCT = {
     imageUrl: 'https://acidwaves.art/DSC04525-2.webp', // Reusing Arrachera image
     category: 'Burritos de la Casa', // Changed category to 'Burritos de la Casa'
     description: '¡Llévate 2 de nuestros deliciosos Burritos Arrachera por un precio especial! Incluye 1L de Té. Personaliza cada uno.',
-    validity: 'Válido Agosto 2025',
+    validity: 'Válido Octubre 2025',
     customizable: true,
     isBundle: true,
     bundleQuantity: 2,
