@@ -355,7 +355,7 @@ const HomePage = ({ products, setCurrentPage, onAddToCart, onCustomize, userId, 
                                     {/* Removed Truck icon */}
                                     <div className="flex flex-col">
                                         <span className="text-xs text-gray-500">Envío:</span>
-                                        <span className="font-semibold" style={{color: THEME_LIME_GREEN_DARKER}}>$40.00</span>
+                                        <span className="font-semibold" style={{color: THEME_LIME_GREEN_DARKER}}>Desde $40.00</span>
                                     </div>
                                 </div>
                             </div>
